@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "676660103213",
+    "project_id": "sayingwedding",
+    "storage_bucket": "sayingwedding.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:676660103213:android:9ff96f92d0d3ead6b0d0a4",
+        "android_client_info": {
+          "package_name": "com.akhdan.wedding_invitation"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApww8l2bhaiv0FIBj3u6_MLa71D1dGy9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
