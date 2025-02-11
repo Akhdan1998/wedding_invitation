@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,7 +42,8 @@ class _MyAppState extends State<MyApp> {
       });
     } else {
       try {
-        UserCredential userCredential = await FirebaseAuth.instance.signInAnonymously();
+        UserCredential userCredential =
+            await FirebaseAuth.instance.signInAnonymously();
         _user = userCredential.user;
 
         await prefs.setString('anonymous_uid', _user!.uid);
@@ -56,17 +59,37 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      color: Colors.transparent,
       debugShowCheckedModeBanner: false,
+      builder: (context, child) {
+        return ScrollConfiguration(
+          behavior: MyCustomScrollBehavior(),
+          child: child!,
+        );
+      },
       home: _user == null ? LoadingScreen() : HomePage(),
     );
   }
+}
+
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+      };
 }
 
 class LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: CircularProgressIndicator(color: Colors.transparent,),),
+      body: Center(
+        child: CircularProgressIndicator(
+          color: Colors.transparent,
+        ),
+      ),
     );
   }
 }

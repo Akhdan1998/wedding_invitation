@@ -13,15 +13,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  final PageController _pageController = PageController();
-  late AnimationController _controller;
   double screenWidth = 0.0, screenHeight = 0.0;
   List<Star> _stars = [];
   Timer? _timer;
   Duration _remainingTime = Duration.zero;
-  static final eventDate = DateTime(2025, 11, 8, 9, 0);
   String dropdownValue = list.first;
   String guestName = "Tamu Undangan";
+  bool isPlaying = false;
+  bool isLoading = false;
+  final PageController _pageController = PageController();
+  late AnimationController _controller;
+  static final eventDate = DateTime(2025, 11, 8, 9, 0);
   final String accountNumberA = '0710314349';
   final String accountNumberF = '5910115342';
   final String phoneNumber = '081290763984';
@@ -30,8 +32,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final String alamat =
       'Jalan Curug Agung, Gang Mushola, Rt.02/10, Tanah Baru, Beji, Depok, Jawa Barat\n(Gerbang Warna Biru)';
   final AudioPlayer _audioPlayer = AudioPlayer();
-  bool isPlaying = false;
-  bool isLoading = false;
   final TextEditingController nama = TextEditingController();
   final TextEditingController ucapan = TextEditingController();
   final List<Color> colors = [
@@ -82,14 +82,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         "Z";
   }
 
+  String toTitleCase(String text) {
+    if (text.isEmpty) return '-';
+    return text.split(' ').map((word) {
+      if (word.isEmpty) return '';
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    }).join(' ');
+  }
+
   void _getGuestNameFromUrl() {
-    // Ambil parameter dari URL
     Uri uri = Uri.parse(html.window.location.href);
     String? name = uri.queryParameters['name'];
 
     if (name != null && name.isNotEmpty) {
       setState(() {
-        guestName = name; // Set nama tamu dari URL
+        guestName = name;
       });
     }
   }
@@ -248,8 +255,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget _buildHomePage() {
     final String guestName = Uri.base.queryParameters["name"] ?? "";
-    print("Nama tamu dari URL: $guestName");
-
     return Stack(
       children: [
         _buildRotatingImage(),
@@ -280,11 +285,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ).createShader(bounds);
                   },
                   child: Text(
-                    'AKHDAN & FITRI',
+                    'Akhdan\n&\nFitri', textAlign: TextAlign.center,
                     style: CinzelDecorative(
                       color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 50,
+                      fontWeight: FontWeight.normal,
                     ),
                   ),
                 ),
@@ -296,8 +301,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
                 SizedBox(height: 30),
                 Text(
-                  guestName.isNotEmpty ? guestName : 'Tamu Undangan',
-                  style: BonaNova(fontSize: 30, color: Colors.white,),
+                  guestName.isNotEmpty ? guestName + ' & Partner' : 'Tamu Undangan',
+                  style: BonaNova(fontSize: 20, color: Colors.white,),
                 ),
                 SizedBox(height: 30),
                 _buildButton('Buka Undangan', Icons.drafts, () {
@@ -318,10 +323,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget _buildUIPage() {
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
     return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
       child: Column(
         children: [
           //_buildCountdownPage
           Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
@@ -359,10 +366,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ).createShader(bounds);
                       },
                       child: Text(
-                        'AKHDAN & FITRI',
+                        'Akhdan & Fitri',
                         style: CinzelDecorative(
                           color: Colors.white,
-                          fontSize: 30,
+                          fontSize: 40,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -407,11 +414,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           Container(
             padding: EdgeInsets.all(20),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Dengan memohon rahmat dan ridho Allah Subhanahu Wa Ta’ala, dengan penuh syukur kami bermaksud menyelenggarakan pernikahan kami',
-                  style: Desk(color: Colors.white),
+                  style: Desk(color: Colors.white, fontSize: 13),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 30),
@@ -446,18 +454,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           Container(
             padding: EdgeInsets.all(20),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Dengan segala kerendahan hati kami berharap kehadiran kehadiran Bapak/Ibu/Saudara/i dalam acara pernikahan kami yang akan diselenggarakan pada :',
-                  style: Desk(color: Colors.white),
+                  style: Desk(color: Colors.white, fontSize: 13,),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 30),
                 Image.asset(
                   'assets/datetime.png',
                   color: Colors.white,
-                  width: 200,
+                  width: 115,
                   fit: BoxFit.cover,
                 ),
                 SizedBox(height: 30),
@@ -473,7 +482,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ).createShader(bounds);
                   },
                   child: Text(
-                    'AKAD NIKAH',
+                    'Akad Nikah',
                     style: CinzelDecorative(
                       color: Colors.white,
                       fontSize: 30,
@@ -528,7 +537,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ).createShader(bounds);
                   },
                   child: Text(
-                    'RESEPSI',
+                    'Resepsi',
                     style: CinzelDecorative(
                       color: Colors.white,
                       fontSize: 30,
@@ -610,8 +619,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           SizedBox(height: 50),
           //_buildGalleryPage
           Container(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 20),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ShaderMask(
                   shaderCallback: (Rect bounds) {
@@ -628,123 +639,41 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     'Our Gallery',
                     style: CinzelDecorative(
                       color: Colors.white,
-                      fontSize: 30,
+                      fontSize: MediaQuery.of(context).size.width * 0.08, // Responsif
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
                 SizedBox(height: 30),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Container(
-                      height: 300,
-                      width: 170,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                          image: AssetImage('assets/a.jpeg'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
+                    _buildImageContainer(context, 'assets/a.jpeg', 0.38, 0.5),
                     Column(
                       children: [
-                        Container(
-                          height: 145,
-                          width: 210,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              image: AssetImage('assets/b.jpeg'),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Container(
-                          height: 145,
-                          width: 210,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              image: AssetImage('assets/berdua.jpeg'),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
+                        _buildImageContainer(context, 'assets/b.jpeg', 0.48, 0.24),
+                        SizedBox(height: 12),
+                        _buildImageContainer(context, 'assets/berdua.jpeg', 0.48, 0.24),
                       ],
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
-                Container(
-                  height: 250,
-                  width: 400,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(
-                      image: AssetImage('assets/f.jpeg'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
+                SizedBox(height: 20),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Column(
                       children: [
-                        Container(
-                          height: 145,
-                          width: 210,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              image: AssetImage('assets/c.jpeg'),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Container(
-                          height: 145,
-                          width: 210,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              image: AssetImage('assets/d.jpeg'),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
+                        _buildImageContainer(context, 'assets/c.jpeg', 0.48, 0.24),
+                        SizedBox(height: 12),
+                        _buildImageContainer(context, 'assets/d.jpeg', 0.48, 0.24),
                       ],
                     ),
-                    Container(
-                      height: 300,
-                      width: 170,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                          image: AssetImage('assets/e.jpeg'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
+                    _buildImageContainer(context, 'assets/e.jpeg', 0.38, 0.5),
                   ],
                 ),
-                SizedBox(height: 10),
-                Container(
-                  height: 250,
-                  width: 400,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    image: DecorationImage(
-                      image: AssetImage('assets/g.jpeg'),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
+                SizedBox(height: 20),
+                _buildImageContainer(context, 'assets/g.jpeg', 0.9, 0.3),
               ],
             ),
           ),
@@ -753,6 +682,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           Container(
             padding: EdgeInsets.all(20),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ShaderMask(
                   shaderCallback: (Rect bounds) {
@@ -766,7 +697,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ).createShader(bounds);
                   },
                   child: Text(
-                    'Kado Pernikahan',
+                    'Kado Pernikahan', textAlign: TextAlign.center,
                     style: CinzelDecorative(
                       color: Colors.white,
                       fontSize: 30,
@@ -958,6 +889,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           Container(
             padding: EdgeInsets.all(20),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ShaderMask(
                   shaderCallback: (Rect bounds) {
@@ -982,7 +915,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 SizedBox(height: 20),
                 Text(
                   'Kirimkan ucapan dan doa untuk kedua mempelai',
-                  style: Desk(color: Colors.white),
+                  style: Desk(color: Colors.white), textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 20),
                 TextFieldCustom(
@@ -1132,101 +1065,107 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     }
 
                     var docs = snapshot.data!.docs;
+                    int itemCount = docs.length > 5 ? 5 : docs.length;
 
-                    return ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      physics: BouncingScrollPhysics(),
-                      itemCount: docs.length,
-                      itemBuilder: (context, index) {
-                        var data = docs[index].data() as Map<String, dynamic>;
+                    return SizedBox(
+                      height: 300,
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: false,
+                        physics: ClampingScrollPhysics(),
+                        itemCount: itemCount,
+                        itemBuilder: (context, index) {
+                          var data = docs[index].data() as Map<String, dynamic>;
 
-                        Timestamp? timestamp = data['timestamp'];
-                        String date = timestamp != null
-                            ? DateFormat('dd MMM yyyy || HH:mm').format(
-                            DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000).toLocal())
-                            : '-';
+                          Timestamp? timestamp = data['timestamp'];
+                          String date = timestamp != null
+                              ? DateFormat('dd MMM yyyy || HH:mm').format(
+                              DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000).toLocal())
+                              : '-';
 
-                        return Container(
-                          padding: EdgeInsets.all(10),
-                          margin: EdgeInsets.only(bottom: 10),
-                              decoration: BoxDecoration(
+                          return Container(
+                            padding: EdgeInsets.all(10),
+                            margin: EdgeInsets.only(bottom: 10),
+                            decoration: BoxDecoration(
                               color: Colors.grey.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(10)
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width: 30,
-                                        height: 30,
-                                        // padding: EdgeInsets.all(10),
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: getColorFromName(data['nama'] ?? ''),
-                                        ),
-                                        child: Text(
-                                          (data['nama'] != null && data['nama'].isNotEmpty)
-                                              ? data['nama'][0].toUpperCase()
-                                              : '?',
-                                          style: Desk(fontWeight: FontWeight.bold, color: Colors.white),
-                                        ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: getColorFromName(data['nama'] ?? ''),
                                       ),
-                                      SizedBox(width: 10),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            data['nama'] ?? '-',
-                                            style: Desk(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                          SizedBox(height: 5),
-                                          Container(
-                                            width: MediaQuery.of(context).size.width - 125,
-                                            child: Text(
-                                              data['ucapan'],
-                                              style: Desk(
-                                                color: Colors.white,
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 5),
-                                          Text(
-                                            date,
-                                            style: Desk(
-                                              color: Colors.white,
-                                              fontSize: 9,
-                                            ),
-                                          ),
-                                        ],
+                                      child: Text(
+                                        (data['nama'] != null && data['nama'].isNotEmpty)
+                                            ? data['nama'][0].toUpperCase()
+                                            : '?',
+                                        style: Desk(fontWeight: FontWeight.bold, color: Colors.white),
                                       ),
-                                    ],
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.all(5),
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: (data['kehadiran']?.toLowerCase() == 'saya akan datang')
-                                          ? Colors.green
-                                          : (data['kehadiran']?.toLowerCase() == 'maaf, saya tidak bisa datang')
-                                          ? Colors.red
-                                          : Colors.transparent,
                                     ),
-                                  ),
-                                ],
-                              ),
-                            );
-                      },
+                                    SizedBox(width: 15),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          toTitleCase(data['nama'] ?? '-'),
+                                          style: Desk(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        SizedBox(height: 5),
+                                        SizedBox(
+                                          width: MediaQuery.of(context).size.width - 110,
+                                          child: Text(
+                                            data['ucapan'],
+                                            style: Desk(
+                                              color: Colors.white,
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 5),
+                                        SizedBox(
+                                          width: MediaQuery.of(context).size.width - 110,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                date,
+                                                style: Desk(
+                                                  color: Colors.white,
+                                                  fontSize: 9,
+                                                ),
+                                              ),
+                                              Text(
+                                                data['kehadiran'],
+                                                style: Desk(
+                                                  color: Colors.white,
+                                                  fontSize: 9,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     );
                   },
                 ),
@@ -1251,7 +1190,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ).createShader(bounds);
                   },
                   child: Text(
-                    'AKHDAN & FITRI',
+                    'Akhdan & Fitri',
                     style: CinzelDecorative(
                       color: Colors.white,
                       fontSize: 30,
@@ -1266,9 +1205,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           //_build
           Text(
             'Created by Pendekar Gendut',
-            style: Desk(color: Colors.white, fontSize: 10),
+            style: Desk(color: Colors.white, fontSize: 8),
           ),
+          SizedBox(height: 10),
         ],
+      ),
+    );
+  }
+
+  Widget _buildImageContainer(BuildContext context, String imagePath, double widthFactor, double heightFactor) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    return Container(
+      width: screenWidth * widthFactor,
+      height: screenHeight * heightFactor,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        image: DecorationImage(
+          image: AssetImage(imagePath),
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
@@ -1307,8 +1264,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             name,
             style: CinzelDecorative(
               color: Colors.white,
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              fontWeight: FontWeight.normal,
             ),
           ),
         ),
@@ -1344,10 +1301,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget _buildBottomImage() {
     return Positioned(
-      bottom: 0,
-      left: 0,
-      right: 0,
-      child: Image.asset('assets/sen.png'),
+      bottom: 10,
+      left: 10,
+      // right: 0,
+      child: Image.asset('assets/bot.png', scale: 20,),
     );
   }
 
@@ -1438,11 +1395,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildTimeBox(int value, String label) {
+  double screenWidth = MediaQuery.of(context).size.width;
+  double boxSize = screenWidth * 0.2;
     return Stack(
       children: [
         Container(
-          width: 90,
-          height: 90,
+          width: boxSize,
+          height: boxSize,
           margin: EdgeInsets.symmetric(horizontal: 5),
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(

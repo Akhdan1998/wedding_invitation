@@ -29,7 +29,7 @@ TextStyle CinzelDecorative({
   FontWeight fontWeight = FontWeight.normal,
   Color color = Colors.black,
 }) {
-  return GoogleFonts.cinzelDecorative(
+  return GoogleFonts.greatVibes(
     fontSize: fontSize,
     fontWeight: fontWeight,
     color: color,
