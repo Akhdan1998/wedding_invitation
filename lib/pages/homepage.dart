@@ -257,11 +257,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final String guestName = Uri.base.queryParameters["name"] ?? "";
     return Stack(
       children: [
-        _buildRotatingImage(),
+        // _buildRotatingImage(),
+        _buildTopImage(),
         Align(
           alignment: Alignment.center,
           child: Container(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.all(50),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -1308,16 +1309,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
+  Widget _buildTopImage() {
+    return Positioned(
+      top: 10,
+      right: 10,
+      child: Image.asset('assets/tot.png', scale: 20,),
+    );
+  }
+
   Widget _buildBackground(Widget child) {
     return Stack(
       children: [
         ColorFiltered(
           colorFilter:
-              ColorFilter.mode(Colors.black87.withOpacity(0.9), BlendMode.xor),
+              ColorFilter.mode('000000'.toColor().withOpacity(0.5), BlendMode.xor,),
           child: Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/background.png'),
+                image: AssetImage('assets/paper.png'),
                 fit: BoxFit.cover,
               ),
             ),
