@@ -137,8 +137,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     String audioPath = 'assets/audio/music.mp3';
 
     if (kIsWeb) {
-      String audioUrl = Uri.base.resolve(audioPath).toString();
-      await _audioPlayer.play(UrlSource(audioUrl));
+      final ByteData data = await rootBundle.load(audioPath);
+      final List<int> bytes = data.buffer.asUint8List();
+      final String base64String = "data:audio/mp3;base64,${base64Encode(bytes)}";
+
+      await _audioPlayer.play(UrlSource(base64String));
     } else {
       await _audioPlayer.play(AssetSource(audioPath));
     }
