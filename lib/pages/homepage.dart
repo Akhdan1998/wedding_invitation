@@ -317,7 +317,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 _buildTextBonaNova(
                   guestName.isNotEmpty
                       ? '$guestName & Partner'
-                      : 'Tamu Undangan',
+                      : 'Agus Buntung & Partner',
                   fontSize: 20,
                 ),
                 const SizedBox(height: 30),
