@@ -6,7 +6,7 @@ List<String> list = <String>[
 ];
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -29,13 +29,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final String phoneNumber = '081290763984';
   final String phoneNumberWA = "6281290763984";
   final String message = "Halo, Pendekar Gendut!";
+  final String schedule = "Sabtu, 8 November 2025";
   final String alamat =
       'Jalan Curug Agung, Gang Mushola, Rt.02/10, Tanah Baru, Beji, Depok, Jawa Barat\n(Gerbang Warna Biru)';
   final AudioPlayer _audioPlayer = AudioPlayer();
   final TextEditingController nama = TextEditingController();
   final TextEditingController ucapan = TextEditingController();
   final List<Color> colors = [
-    Colors.redAccent, Colors.greenAccent, Colors.blueAccent, Colors.orangeAccent, Colors.purpleAccent, Colors.tealAccent, Colors.pinkAccent, Colors.indigoAccent,
+    Colors.redAccent,
+    Colors.greenAccent,
+    Colors.blueAccent,
+    Colors.orangeAccent,
+    Colors.purpleAccent,
+    Colors.tealAccent,
+    Colors.pinkAccent,
+    Colors.indigoAccent,
   ];
 
   Color getColorFromName(String name) {
@@ -63,7 +71,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         "&text=${Uri.encodeComponent("Akhdan & Fitri Wedding")}"
         "&details=${Uri.encodeComponent("Jangan lupa hadir di acara pernikahan kami!")}"
         "&location=${Uri.encodeComponent("Jakarta, Indonesia")}"
-        "&dates=${_formatDateTime(eventDate)}/${_formatDateTime(eventDate.add(Duration(hours: 3)))}");
+        "&dates=${_formatDateTime(eventDate)}/${_formatDateTime(eventDate.add(const Duration(hours: 3),),)}");
 
     if (await canLaunchUrl(googleCalendarUrl)) {
       await launchUrl(googleCalendarUrl, mode: LaunchMode.externalApplication);
@@ -73,13 +81,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   String _formatDateTime(DateTime dateTime) {
-    return dateTime
-            .toUtc()
-            .toIso8601String()
-            .replaceAll("-", "")
-            .replaceAll(":", "")
-            .split(".")[0] +
-        "Z";
+    return "${dateTime.toUtc().toIso8601String().replaceAll("-", "").replaceAll(":", "").split(".")[0]}Z";
   }
 
   String toTitleCase(String text) {
@@ -102,7 +104,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _startCountdown() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       final difference = eventDate.difference(DateTime.now());
       if (difference.isNegative) {
         timer.cancel();
@@ -127,7 +129,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   void _initializeStars() {
     if (screenWidth > 0 && screenHeight > 0) {
-      // Pastikan ukuran valid
       _stars = List.generate(100, (_) => Star(screenWidth, screenHeight));
     }
   }
@@ -154,32 +155,60 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
+  void _handleSend() async {
+    if (nama.text.isEmpty || ucapan.text.isEmpty || dropdownValue.isEmpty) {
+      DelightToastBar(
+        position: DelightSnackbarPosition.top,
+        animationDuration: const Duration(seconds: 3),
+        builder: (context) => ToastCard(title: _buildTextMerriweather("Harap isi semua kolom!", fontSize: 14)),
+      ).show(context);
+      return;
+    }
+
+    setState(() => isLoading = true);
+
+    try {
+      String uid = FirebaseAuth.instance.currentUser?.uid ?? "anonymous";
+      await FirebaseFirestore.instance.collection('ucapan_kehadiran').add({
+        'nama': nama.text,
+        'ucapan': ucapan.text,
+        'kehadiran': dropdownValue,
+        'uid': uid,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      if (!mounted) return;
+      setState(() {
+        nama.clear();
+        ucapan.clear();
+        dropdownValue = list.first;
+      });
+    } catch (e) {
+      if (kDebugMode) print('ERROR: $e');
+    }
+
+    if (!mounted) return;
+    setState(() => isLoading = false);
+  }
+
   void _copyToClipboard(BuildContext context, String text) {
     FlutterClipboard.copy(text).then((_) {
       DelightToastBar(
         position: DelightSnackbarPosition.top,
-        animationDuration: Duration(seconds: 3),
+        animationDuration: const Duration(seconds: 3),
         builder: (context) => ToastCard(
-          leading: Icon(
+          leading: const Icon(
             Icons.copy,
             size: 28,
           ),
-          title: Text(
+          title: _buildTextNoto(
             "Disalin ke clipboard!",
-            style: Noto(
-              fontWeight: FontWeight.w700,
-              fontSize: 14,
-            ),
+            fontSize: 14,
           ),
         ),
       ).show(context);
     });
   }
-
-  late final AnimationController _rotationController = AnimationController(
-    vsync: this,
-    duration: Duration(seconds: 5),
-  )..repeat();
 
   @override
   void initState() {
@@ -188,7 +217,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 5),
+      duration: const Duration(seconds: 5),
     )..repeat();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -212,7 +241,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _rotationController.dispose();
     _timer?.cancel();
     _pageController.dispose();
     _controller.dispose();
@@ -224,9 +252,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     if (screenWidth == 0.0 || screenHeight == 0.0) {
-      return Scaffold(
-        backgroundColor: Colors.black,
-        body: Center(child: CircularProgressIndicator()), // Tampilkan loading
+      return const Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Colors.transparent,
+          ),
+        ), // Tampilkan loading
       );
     }
     return Scaffold(
@@ -237,6 +269,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             PageView(
               scrollDirection: Axis.vertical,
               controller: _pageController,
+              physics: const ClampingScrollPhysics(),
               children: [
                 _buildHomePage(),
                 _buildUIPage(),
@@ -262,54 +295,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         Align(
           alignment: Alignment.center,
           child: Container(
-            padding: EdgeInsets.all(50),
+            padding: const EdgeInsets.all(50),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Undangan Pernikahan Kami',
-                  style: Noto(
-                    color: Colors.white,
-                    fontSize: 15,
-                  ),
+                _buildTextNoto(
+                  "Undangan Pernikahan Kami",
+                  color: Colors.white,
                 ),
-                SizedBox(height: 30),
-                ShaderMask(
-                  shaderCallback: (Rect bounds) {
-                    return LinearGradient(
-                      colors: [
-                        'BD7D1C'.toColor(),
-                        'EBB23E'.toColor(),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ).createShader(bounds);
-                  },
-                  child: Text(
-                    'Akhdan\n&\nFitri', textAlign: TextAlign.center,
-                    style: CinzelDecorative(
-                      color: Colors.white,
-                      fontSize: 50,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
+                const SizedBox(height: 30),
+                _buildGradientText(
+                  'Akhdan\n&\nFitri',
+                  fontSize: 50,
                 ),
-                SizedBox(height: 30),
-                Text(
+                const SizedBox(height: 30),
+                _buildTextBonaNova(
                   'Tanpa Mengurangi Rasa Hormat, Kami Mengundang Anda Untuk Berhadir Di Acara Pernikahan Kami.',
-                  textAlign: TextAlign.center,
-                  style: BonaNova(color: Colors.white, fontSize: 13),
+                  fontSize: 13,
                 ),
-                SizedBox(height: 30),
-                Text(
-                  guestName.isNotEmpty ? guestName + ' & Partner' : 'Tamu Undangan',
-                  style: BonaNova(fontSize: 20, color: Colors.white,),
+                const SizedBox(height: 30),
+                _buildTextBonaNova(
+                  guestName.isNotEmpty
+                      ? '$guestName & Partner'
+                      : 'Tamu Undangan',
+                  fontSize: 20,
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 _buildButton('Buka Undangan', Icons.drafts, () {
                   _playMusic();
                   _pageController.animateToPage(1,
-                      duration: Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 500),
                       curve: Curves.easeInOut);
                 }),
               ],
@@ -322,108 +337,82 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildUIPage() {
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
     return SingleChildScrollView(
-      physics: ClampingScrollPhysics(),
+      physics: const ClampingScrollPhysics(),
       child: Column(
         children: [
           //_buildCountdownPage
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: EdgeInsets.only(top: 20),
-                child: Column(
+          Container(
+            padding: const EdgeInsets.only(top: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 200,
+                  height: 300,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    image: const DecorationImage(
+                        image: AssetImage('assets/wkwkwk.jpeg'),
+                        fit: BoxFit.cover),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                _buildTextNoto(
+                  'The Wedding Of',
+                  fontSize: 15,
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 30),
+                _buildGradientText(
+                  'Akhdan & Fitri',
+                  fontSize: 40,
+                ),
+                const SizedBox(height: 30),
+                _buildTextNoto(
+                  schedule,
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 30),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      width: 200,
-                      height: 300,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          image: DecorationImage(
-                              image: AssetImage('assets/wkwkwk.jpeg'),
-                              fit: BoxFit.cover)),
-                    ),
-                    SizedBox(height: 30),
-                    Text(
-                      'The Wedding Of',
-                      style: Noto(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.normal),
-                    ),
-                    SizedBox(height: 30),
-                    ShaderMask(
-                      shaderCallback: (Rect bounds) {
-                        return LinearGradient(
-                          colors: [
-                            'BD7D1C'.toColor(),
-                            'EBB23E'.toColor(),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ).createShader(bounds);
-                      },
-                      child: Text(
-                        'Akhdan & Fitri',
-                        style: CinzelDecorative(
-                          color: Colors.white,
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    Text(
-                      'Sabtu, 8 November 2025',
-                      textAlign: TextAlign.center,
-                      style: Noto(
-                          color: Colors.white,
-                          fontSize: 17,
-                          fontWeight: FontWeight.normal),
-                    ),
-                    SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildTimeBox(_remainingTime.inDays, 'Hari'),
-                        _buildTimeBox(_remainingTime.inHours % 24, 'Jam'),
-                        _buildTimeBox(_remainingTime.inMinutes % 60, 'Menit'),
-                        _buildTimeBox(_remainingTime.inSeconds % 60, 'Detik'),
-                      ],
-                    ),
-                    SizedBox(height: 30),
-                    _buildButton('Save the Date', Icons.calendar_month,
-                        _saveToGoogleCalendar),
+                    _buildTimeBox(_remainingTime.inDays, 'Hari'),
+                    _buildTimeBox(_remainingTime.inHours % 24, 'Jam'),
+                    _buildTimeBox(_remainingTime.inMinutes % 60, 'Menit'),
+                    _buildTimeBox(_remainingTime.inSeconds % 60, 'Detik'),
                   ],
                 ),
-              ),
-              Container(
-                  padding:
-                      EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 30),
-                  child: Text(
+                const SizedBox(height: 30),
+                _buildButton('Save the Date', Icons.calendar_month,
+                    _saveToGoogleCalendar),
+                const SizedBox(height: 30),
+                Container(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: _buildTextMerriweather(
                     '"Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung merasa tenteram kepadanya. Dan Dia menjadikan di antaramu rasa kasih dan sayang."\n{Q.S : Ar-Rum (30) : 21}',
-                    style: Desk(color: Colors.white, fontSize: 10),
-                    textAlign: TextAlign.center,
-                  )),
-            ],
+                    fontSize: 12,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
           ),
-          SizedBox(height: 50),
+          const SizedBox(height: 50),
           //_buildIdentityPage
           Container(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                _buildTextMerriweather(
                   'Dengan memohon rahmat dan ridho Allah Subhanahu Wa Ta’ala, dengan penuh syukur kami bermaksud menyelenggarakan pernikahan kami',
-                  style: Desk(color: Colors.white, fontSize: 13),
-                  textAlign: TextAlign.center,
+                  fontSize: 13,
+                  color: Colors.white,
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 _buildIdentityItem(
                   name: 'Akhdan Habibie, S.Kom',
                   imagePath: 'assets/man.png',
@@ -431,16 +420,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   parents:
                       'Anak kedua dari\nBapak Drs. Muhammad Syakur & Ibu Dra. Hasanah',
                 ),
-                SizedBox(height: 30),
-                Text(
-                  '&',
-                  style: CinzelDecorative(
-                    color: 'BD7D1C'.toColor(),
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
+                _buildTextGreatVibes('&',
+                    fontSize: 30, color: const Color(0xFFBD7D1C)),
+                const SizedBox(height: 30),
                 _buildIdentityItem(
                   name: 'Fitri Yulianingsih, S.Ak',
                   imagePath: 'assets/girl.png',
@@ -450,157 +433,68 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ],
             ),
           ),
-          SizedBox(height: 50),
+          const SizedBox(height: 50),
           //_buildDateTimePage
           Container(
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.05,
+              vertical: 20,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Dengan segala kerendahan hati kami berharap kehadiran kehadiran Bapak/Ibu/Saudara/i dalam acara pernikahan kami yang akan diselenggarakan pada :',
-                  style: Desk(color: Colors.white, fontSize: 13,),
-                  textAlign: TextAlign.center,
+                _buildTextMerriweather(
+                  'Dengan segala kerendahan hati kami berharap kehadiran Bapak/Ibu/Saudara/i dalam acara pernikahan kami yang akan diselenggarakan pada :',
+                  fontSize: 13,
+                  color: Colors.white,
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 Image.asset(
                   'assets/datetime.png',
                   color: Colors.white,
                   width: 115,
                   fit: BoxFit.cover,
                 ),
-                SizedBox(height: 30),
-                ShaderMask(
-                  shaderCallback: (Rect bounds) {
-                    return LinearGradient(
-                      colors: [
-                        'BD7D1C'.toColor(),
-                        'EBB23E'.toColor(),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ).createShader(bounds);
-                  },
-                  child: Text(
-                    'Akad Nikah',
-                    style: CinzelDecorative(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                const SizedBox(height: 30),
+                _buildGradientText(
+                  'Akad Nikah',
+                  fontSize: MediaQuery.of(context).size.width * 0.08,
                 ),
-                SizedBox(height: 20),
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.calendar_month,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          'Sabtu, 8 November 2025',
-                          style: Desk(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.schedule,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          'Pukul : 09:00 WIB - 10:00',
-                          style: Desk(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ],
+                const SizedBox(height: 20),
+                _buildScheduleItem(
+                  date: schedule,
+                  time: 'Pukul : 09:00 WIB - 10:00',
                 ),
-                SizedBox(height: 30),
-                ShaderMask(
-                  shaderCallback: (Rect bounds) {
-                    return LinearGradient(
-                      colors: [
-                        'BD7D1C'.toColor(),
-                        'EBB23E'.toColor(),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ).createShader(bounds);
-                  },
-                  child: Text(
-                    'Resepsi',
-                    style: CinzelDecorative(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                const SizedBox(height: 30),
+                _buildGradientText(
+                  'Resepsi',
+                  fontSize: MediaQuery.of(context).size.width * 0.08,
                 ),
-                SizedBox(height: 20),
-                Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.calendar_month,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          'Sabtu, 8 November 2025',
-                          style: Desk(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.schedule,
-                          color: Colors.white,
-                        ),
-                        SizedBox(width: 10),
-                        Text(
-                          'Pukul : 11:00 WIB - Selesai',
-                          style: Desk(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ],
+                const SizedBox(height: 20),
+                _buildScheduleItem(
+                  date: schedule,
+                  time: 'Pukul : 11:00 WIB - Selesai',
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
+                    _buildTextMerriweather(
                       'Bertempat di,',
-                      style: Desk(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                    SizedBox(height: 5),
-                    Text(
+                    const SizedBox(height: 5),
+                    _buildTextMerriweather(
                       'Villa 3A Ciganjur\nJl. Moh. Kahfi 1 No.3A 8, RT.8/RW.1, Ciganjur, Kec. Jagakarsa, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12630',
-                      style: Desk(
-                        color: Colors.white,
-                        fontSize: 12,
-                      ),
-                      textAlign: TextAlign.center,
+                      fontSize: 12,
+                      color: Colors.white,
                     ),
                   ],
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 _buildButton('Lihat Lokasi', Icons.location_pin, () async {
                   final Uri googleMapsAppUrl =
                       Uri.parse("geo:0,0?q=ermaVWha4hcJXcpY7");
@@ -617,615 +511,668 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ],
             ),
           ),
-          SizedBox(height: 50),
+          const SizedBox(height: 50),
           //_buildGalleryPage
           Container(
-            padding: EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 20),
+            padding: const EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ShaderMask(
-                  shaderCallback: (Rect bounds) {
-                    return LinearGradient(
-                      colors: [
-                        'BD7D1C'.toColor(),
-                        'EBB23E'.toColor(),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ).createShader(bounds);
-                  },
-                  child: Text(
-                    'Our Gallery',
-                    style: CinzelDecorative(
-                      color: Colors.white,
-                      fontSize: MediaQuery.of(context).size.width * 0.08, // Responsif
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                _buildGradientText(
+                  'Our Gallery',
+                  fontSize: MediaQuery.of(context).size.width * 0.08,
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildImageContainer(context, 'assets/a.jpeg', 0.38, 0.5),
                     Column(
                       children: [
-                        _buildImageContainer(context, 'assets/b.jpeg', 0.48, 0.24),
-                        SizedBox(height: 12),
-                        _buildImageContainer(context, 'assets/berdua.jpeg', 0.48, 0.24),
+                        _buildImageContainer(
+                            context, 'assets/b.jpeg', 0.48, 0.24),
+                        const SizedBox(height: 12),
+                        _buildImageContainer(
+                            context, 'assets/berdua.jpeg', 0.48, 0.24),
                       ],
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Column(
                       children: [
-                        _buildImageContainer(context, 'assets/c.jpeg', 0.48, 0.24),
-                        SizedBox(height: 12),
-                        _buildImageContainer(context, 'assets/d.jpeg', 0.48, 0.24),
+                        _buildImageContainer(
+                            context, 'assets/c.jpeg', 0.48, 0.24),
+                        const SizedBox(height: 12),
+                        _buildImageContainer(
+                            context, 'assets/d.jpeg', 0.48, 0.24),
                       ],
                     ),
                     _buildImageContainer(context, 'assets/e.jpeg', 0.38, 0.5),
                   ],
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 _buildImageContainer(context, 'assets/g.jpeg', 0.9, 0.3),
               ],
             ),
           ),
-          SizedBox(height: 50),
+          const SizedBox(height: 50),
           //_buildGiftPage
           Container(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ShaderMask(
-                  shaderCallback: (Rect bounds) {
-                    return LinearGradient(
-                      colors: [
-                        'BD7D1C'.toColor(),
-                        'EBB23E'.toColor(),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ).createShader(bounds);
-                  },
-                  child: Text(
-                    'Kado Pernikahan', textAlign: TextAlign.center,
-                    style: CinzelDecorative(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                _buildGradientText(
+                  'Kado Pernikahan',
+                  fontSize: MediaQuery.of(context).size.width * 0.08,
                 ),
-                SizedBox(height: 15),
-                Text(
-                  'Doa Restu Anda merupakan karunia yang sangat berarti bagi kami.\nDan jika memberi adalah ungkapan tanda kasih Anda, Anda dapat memberi kado secara cashless.',
-                  style: Desk(
-                    color: Colors.white,
-                    fontSize: 13,
-                  ),
-                  textAlign: TextAlign.center,
+                const SizedBox(height: 15),
+                _buildTextMerriweather(
+                  "Doa Restu Anda merupakan karunia yang sangat berarti bagi kami.\nDan jika memberi adalah ungkapan tanda kasih Anda, Anda dapat memberi kado secara cashless.",
+                  fontSize: 13,
+                  color: Colors.white,
                 ),
-                SizedBox(height: 20),
-                Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Center(
-                    child: Column(
-                      children: [
-                        Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Akhdan Habibie',
-                                      style: Noto(fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      accountNumberA,
-                                      style: Noto(fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                                Image.asset(
-                                  'assets/bca.png',
-                                  scale: 6,
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 5),
-                            _buildCopy(
-                              'Salin No. Rekening',
-                              () => _copyToClipboard(context, accountNumberA),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Akhdan Habibie',
-                                      style: Noto(fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      phoneNumber,
-                                      style: Noto(fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                                Image.asset(
-                                  'assets/dana.png',
-                                  scale: 40,
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 5),
-                            _buildCopy(
-                              'Salin No. Telepon',
-                              () => _copyToClipboard(context, phoneNumber),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Fitri Yulianingsih',
-                                      style: Noto(fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      accountNumberF,
-                                      style: Noto(fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                                Image.asset(
-                                  'assets/bca.png',
-                                  scale: 6,
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 5),
-                            _buildCopy(
-                              'Salin No. Rekening',
-                              () => _copyToClipboard(context, accountNumberF),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 20),
-                        Column(
-                          children: [
-                            Icon(
-                              Icons.card_giftcard,
-                              color: Colors.black,
-                              size: 40,
-                            ),
-                            SizedBox(height: 20),
-                            Text(
-                              'Anda Juga Bisa Mengirim Kado Fisik Ke Alamat Berikut :',
-                              style: Noto(fontSize: 13),
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              alamat,
-                              style: Noto(fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 20),
-                            _buildCopy(
-                              'Salin Alamat',
-                              () => _copyToClipboard(context, alamat),
-                            ),
-                            SizedBox(height: 10),
-                            GestureDetector(
-                              onTap: openWhatsApp,
-                              child: Container(
-                                alignment: Alignment.center,
-                                width: MediaQuery.sizeOf(context).width,
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  border:
-                                      Border.all(width: 1, color: Colors.black),
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      'assets/wa.png',
-                                      scale: 85,
-                                      color: Colors.black,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text("Konfirmasi via WhatsApp",
-                                        style: Desk(fontSize: 10)),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                const SizedBox(height: 20),
+                _buildGiftContainer(context),
               ],
             ),
           ),
-          SizedBox(height: 50),
+          const SizedBox(height: 50),
           //_buildSayingPage
           Container(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ShaderMask(
-                  shaderCallback: (Rect bounds) {
-                    return LinearGradient(
-                      colors: [
-                        'BD7D1C'.toColor(),
-                        'EBB23E'.toColor(),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ).createShader(bounds);
-                  },
-                  child: Text(
-                    'Ucapan dan Doa',
-                    style: CinzelDecorative(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                _buildGradientText(
+                  'Ucapan dan Doa',
+                  fontSize: MediaQuery.of(context).size.width * 0.08,
                 ),
-                SizedBox(height: 20),
-                Text(
-                  'Kirimkan ucapan dan doa untuk kedua mempelai',
-                  style: Desk(color: Colors.white), textAlign: TextAlign.center,
+                const SizedBox(height: 20),
+                _buildTextMerriweather(
+                  "Kirimkan ucapan dan doa untuk kedua mempelai",
+                  color: Colors.white,fontSize: 13,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFieldCustom(
                   controller: nama,
                   obscureText: false,
                   height: MediaQuery.of(context).size.height * 0.1,
-                  borderSide: BorderSide(color: Colors.black, width: 2.0),
+                  borderSide: const BorderSide(color: Colors.black, width: 2.0),
                   hintText: 'Nama',
-                  textCapitalization: TextCapitalization.words, // Huruf pertama setiap kata menjadi kapital
+                  textCapitalization: TextCapitalization.words,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFieldCustom(
                   controller: ucapan,
                   obscureText: false,
                   height: MediaQuery.of(context).size.height * 0.1,
-                  borderSide: BorderSide(color: Colors.black, width: 2.0),
+                  borderSide: const BorderSide(color: Colors.black, width: 2.0),
                   hintText: 'Ucapan',
-                  textCapitalization: TextCapitalization.sentences, // Hanya huruf pertama dari kalimat yang kapital
+                  textCapitalization: TextCapitalization.sentences,
                 ),
-                SizedBox(height: 20),
-                Container(
-                  padding: EdgeInsets.only(left: 10, right: 10),
-                  width: MediaQuery.sizeOf(context).width,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.white,
-                  ),
-                  child: DropdownButton(
-                    value: dropdownValue.isEmpty ? null : dropdownValue,
-                    icon: Icon(Icons.keyboard_arrow_down_sharp),
-                    hint: Text(
-                      "Konfirmasi kehadiran",
-                      style: Desk(color: Colors.grey), // Styling hint
-                    ),
-                    isExpanded: true,
-                    elevation: 0,
-                    underline: Container(),
-                    onChanged: (String? value) {
-                      setState(() {
-                        dropdownValue = value!;
-                      });
-                    },
-                    items: list.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(
-                          value,
-                          style: Desk(),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-                SizedBox(height: 20),
-                (isLoading == true)
-                    ? Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                        ),
-                      )
-                    : Bounce(
-                        onPressed: () async {
-                          if (nama.text.isEmpty ||
-                              ucapan.text.isEmpty ||
-                              dropdownValue.isEmpty) {
-                            DelightToastBar(
-                              position: DelightSnackbarPosition.top,
-                              animationDuration: Duration(seconds: 3),
-                              builder: (context) => ToastCard(
-                                title: Text(
-                                  "Harap isi semua kolom!",
-                                  style: Desk(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                            ).show(context);
-                            return;
-                          }
-
-                          setState(() {
-                            isLoading = true;
-                          });
-
-                          try {
-                            var user = FirebaseAuth.instance.currentUser;
-                            String uid = user?.uid ?? "anonymous";
-
-                            CollectionReference ucapanCollection =
-                                FirebaseFirestore.instance
-                                    .collection('ucapan_kehadiran');
-
-                            await ucapanCollection.add({
-                              'nama': nama.text,
-                              'ucapan': ucapan.text,
-                              'kehadiran': dropdownValue,
-                              'uid': uid,
-                              'timestamp': FieldValue.serverTimestamp(),
-                            });
-
-                            if (!mounted) return;
-                            setState(() {
-                              nama.clear();
-                              ucapan.clear();
-                              dropdownValue = list.first;
-                            });
-                          } catch (e) {
-                            print('ERROR: $e');
-                          }
-
-                          if (!mounted) return;
-                          setState(() {
-                            isLoading = false;
-                          });
-                        },
-                        duration: Duration(milliseconds: 100),
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.transparent,
-                            border: Border.all(
-                              width: 1,
-                              color: Colors.white,
-                            ),
-                          ),
-                          child: Text(
-                            'Kirim',
-                            style: Desk(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                SizedBox(height: 20),
-                Divider(height: 1),
-                SizedBox(height: 10),
+                const SizedBox(height: 20),
+                _buildDropdown(),
+                const SizedBox(height: 20),
+                isLoading ? const Center(child: CircularProgressIndicator(color: Colors.white)) : _buildSendButton(),
+                // (isLoading == true)
+                //     ? const Center(
+                //         child: CircularProgressIndicator(
+                //           color: Colors.white,
+                //         ),
+                //       )
+                //     : Bounce(
+                //         onPressed: () async {
+                //           if (nama.text.isEmpty ||
+                //               ucapan.text.isEmpty ||
+                //               dropdownValue.isEmpty) {
+                //             DelightToastBar(
+                //               position: DelightSnackbarPosition.top,
+                //               animationDuration: const Duration(seconds: 3),
+                //               builder: (context) => ToastCard(
+                //                 title: _buildTextMerriweather(
+                //                   "Harap isi semua kolom!",
+                //                   fontSize: 14,
+                //                 ),
+                //               ),
+                //             ).show(context);
+                //             return;
+                //           }
                 //
-                StreamBuilder<QuerySnapshot>(
-                  stream: _firestore
-                      .collection('ucapan_kehadiran')
-                      .orderBy('timestamp', descending: true)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                      return Container();
-                    }
-
-                    var docs = snapshot.data!.docs;
-                    int itemCount = docs.length > 5 ? 5 : docs.length;
-
-                    return SizedBox(
-                      height: 300,
-                      child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: false,
-                        physics: ClampingScrollPhysics(),
-                        itemCount: itemCount,
-                        itemBuilder: (context, index) {
-                          var data = docs[index].data() as Map<String, dynamic>;
-
-                          Timestamp? timestamp = data['timestamp'];
-                          String date = timestamp != null
-                              ? DateFormat('dd MMM yyyy || HH:mm').format(
-                              DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000).toLocal())
-                              : '-';
-
-                          return Container(
-                            padding: EdgeInsets.all(10),
-                            margin: EdgeInsets.only(bottom: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: getColorFromName(data['nama'] ?? ''),
-                                      ),
-                                      child: Text(
-                                        (data['nama'] != null && data['nama'].isNotEmpty)
-                                            ? data['nama'][0].toUpperCase()
-                                            : '?',
-                                        style: Desk(fontWeight: FontWeight.bold, color: Colors.white),
-                                      ),
-                                    ),
-                                    SizedBox(width: 15),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          toTitleCase(data['nama'] ?? '-'),
-                                          style: Desk(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                        SizedBox(height: 5),
-                                        SizedBox(
-                                          width: MediaQuery.of(context).size.width - 110,
-                                          child: Text(
-                                            data['ucapan'],
-                                            style: Desk(
-                                              color: Colors.white,
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 5),
-                                        SizedBox(
-                                          width: MediaQuery.of(context).size.width - 110,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                date,
-                                                style: Desk(
-                                                  color: Colors.white,
-                                                  fontSize: 9,
-                                                ),
-                                              ),
-                                              Text(
-                                                data['kehadiran'],
-                                                style: Desk(
-                                                  color: Colors.white,
-                                                  fontSize: 9,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
+                //           setState(() {
+                //             isLoading = true;
+                //           });
                 //
-                Divider(height: 1),
-                SizedBox(height: 20),
-                Text(
-                  textAlign: TextAlign.center,
+                //           try {
+                //             var user = FirebaseAuth.instance.currentUser;
+                //             String uid = user?.uid ?? "anonymous";
+                //
+                //             CollectionReference ucapanCollection =
+                //                 FirebaseFirestore.instance
+                //                     .collection('ucapan_kehadiran');
+                //
+                //             await ucapanCollection.add({
+                //               'nama': nama.text,
+                //               'ucapan': ucapan.text,
+                //               'kehadiran': dropdownValue,
+                //               'uid': uid,
+                //               'timestamp': FieldValue.serverTimestamp(),
+                //             });
+                //
+                //             if (!mounted) return;
+                //             setState(() {
+                //               nama.clear();
+                //               ucapan.clear();
+                //               dropdownValue = list.first;
+                //             });
+                //           } catch (e) {
+                //             if (kDebugMode) {
+                //               print('ERROR: $e');
+                //             }
+                //           }
+                //
+                //           if (!mounted) return;
+                //           setState(() {
+                //             isLoading = false;
+                //           });
+                //         },
+                //         duration: const Duration(milliseconds: 100),
+                //         child: Container(
+                //           alignment: Alignment.center,
+                //           padding: const EdgeInsets.all(10),
+                //           decoration: BoxDecoration(
+                //             borderRadius: BorderRadius.circular(10),
+                //             color: Colors.transparent,
+                //             border: Border.all(
+                //               width: 1,
+                //               color: Colors.white,
+                //             ),
+                //           ),
+                //           child: _buildTextMerriweather(
+                //             'Kirim',
+                //             color: Colors.white,
+                //           ),
+                //         ),
+                //       ),
+                const SizedBox(height: 20),
+                const Divider(height: 1),
+                //
+                _buildUcapanList(),
+                // StreamBuilder<QuerySnapshot>(
+                //   stream: firestore
+                //       .collection('ucapan_kehadiran')
+                //       .orderBy('timestamp', descending: true)
+                //       .snapshots(),
+                //   builder: (context, snapshot) {
+                //     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                //       return Container();
+                //     }
+                //
+                //     var docs = snapshot.data!.docs;
+                //     int itemCount = docs.length > 5 ? 5 : docs.length;
+                //
+                //     return SizedBox(
+                //       height: 300,
+                //       child: ListView.builder(
+                //         scrollDirection: Axis.vertical,
+                //         shrinkWrap: false,
+                //         physics: const ClampingScrollPhysics(),
+                //         itemCount: itemCount,
+                //         itemBuilder: (context, index) {
+                //           var data = docs[index].data() as Map<String, dynamic>;
+                //
+                //           Timestamp? timestamp = data['timestamp'];
+                //           String date = timestamp != null
+                //               ? DateFormat('dd MMM yyyy || HH:mm').format(
+                //                   DateTime.fromMillisecondsSinceEpoch(
+                //                           timestamp.seconds * 1000)
+                //                       .toLocal())
+                //               : '-';
+                //
+                //           return Container(
+                //             padding: const EdgeInsets.all(10),
+                //             margin: const EdgeInsets.only(bottom: 10),
+                //             decoration: BoxDecoration(
+                //               color: Colors.grey.withOpacity(0.2),
+                //               borderRadius: BorderRadius.circular(10),
+                //             ),
+                //             child: Row(
+                //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //               crossAxisAlignment: CrossAxisAlignment.center,
+                //               children: [
+                //                 Row(
+                //                   children: [
+                //                     Container(
+                //                       width: 30,
+                //                       height: 30,
+                //                       alignment: Alignment.center,
+                //                       decoration: BoxDecoration(
+                //                         shape: BoxShape.circle,
+                //                         color: getColorFromName(
+                //                             data['nama'] ?? ''),
+                //                       ),
+                //                       child: _buildTextMerriweather(
+                //                         (data['nama'] != null &&
+                //                                 data['nama'].isNotEmpty)
+                //                             ? data['nama'][0].toUpperCase()
+                //                             : '?',
+                //                         color: Colors.white,
+                //                       ),
+                //                     ),
+                //                     const SizedBox(width: 15),
+                //                     Column(
+                //                       mainAxisAlignment:
+                //                           MainAxisAlignment.start,
+                //                       crossAxisAlignment:
+                //                           CrossAxisAlignment.start,
+                //                       children: [
+                //                         _buildTextMerriweather(
+                //                           toTitleCase(data['nama'] ?? '-'),
+                //                           fontSize: 12,
+                //                           color: Colors.white,
+                //                         ),
+                //                         const SizedBox(height: 5),
+                //                         SizedBox(
+                //                           width: MediaQuery.of(context)
+                //                                   .size
+                //                                   .width -
+                //                               110,
+                //                           child: _buildTextMerriweather(
+                //                             textAlign: TextAlign.start,
+                //                             data['ucapan'],
+                //                             fontSize: 13,
+                //                             fontWeight: FontWeight.bold,
+                //                             color: Colors.white,
+                //                           ),
+                //                         ),
+                //                         const SizedBox(height: 5),
+                //                         SizedBox(
+                //                           width: MediaQuery.of(context)
+                //                                   .size
+                //                                   .width -
+                //                               110,
+                //                           child: Row(
+                //                             mainAxisAlignment:
+                //                                 MainAxisAlignment.spaceBetween,
+                //                             children: [
+                //                               _buildTextMerriweather(
+                //                                 date,
+                //                                 fontSize: 9,
+                //                                 color: Colors.white,
+                //                               ),
+                //                               _buildTextMerriweather(
+                //                                 data['kehadiran'],
+                //                                 fontSize: 9,
+                //                                 color: Colors.white,
+                //                               ),
+                //                             ],
+                //                           ),
+                //                         ),
+                //                       ],
+                //                     ),
+                //                   ],
+                //                 ),
+                //               ],
+                //             ),
+                //           );
+                //         },
+                //       ),
+                //     );
+                //   },
+                // ),
+                //
+                const Divider(height: 1),
+                const SizedBox(height: 20),
+                _buildTextMerriweather(
                   'Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i/teman-teman, berkenan hadir dan memberikan do’a restu kepada Kami.\n\nKami yang berhagia',
-                  style: Desk(color: Colors.white),
+                  color: Colors.white, fontSize: 13,
                 ),
-                SizedBox(height: 20),
-                ShaderMask(
-                  shaderCallback: (Rect bounds) {
-                    return LinearGradient(
-                      colors: [
-                        'BD7D1C'.toColor(),
-                        'EBB23E'.toColor(),
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ).createShader(bounds);
-                  },
-                  child: Text(
-                    'Akhdan & Fitri',
-                    style: CinzelDecorative(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                const SizedBox(height: 20),
+                _buildGradientText(
+                  'Akhdan & Fitri',
+                  fontSize: MediaQuery.of(context).size.width * 0.08,
                 ),
               ],
             ),
           ),
-          SizedBox(height: 50),
+          const SizedBox(height: 50),
           //_build
-          Text(
+          _buildTextMerriweather(
             'Created by Pendekar Gendut',
-            style: Desk(color: Colors.white, fontSize: 8),
+            fontSize: 8,
+            color: Colors.white,
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
         ],
       ),
     );
   }
 
-  Widget _buildImageContainer(BuildContext context, String imagePath, double widthFactor, double heightFactor) {
+  Widget _buildUcapanList() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('ucapan_kehadiran').orderBy('timestamp', descending: true).snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) return Container();
+
+        var docs = snapshot.data!.docs;
+        return SizedBox(
+          height: 300,
+          child: ListView.builder(
+            shrinkWrap: false,
+            physics: const ClampingScrollPhysics(),
+            itemCount: docs.length,
+            itemBuilder: (context, index) => _buildUcapanItem(docs[index]),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildUcapanItem(QueryDocumentSnapshot doc) {
+    var data = doc.data() as Map<String, dynamic>;
+    String date = data['timestamp'] != null
+        ? DateFormat('dd MMM yyyy || HH:mm').format(DateTime.fromMillisecondsSinceEpoch(data['timestamp'].seconds * 1000).toLocal())
+        : '-';
+
+    return Container(
+      padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(color: Colors.grey.withOpacity(0.2), borderRadius: BorderRadius.circular(10)),
+      child: Row(
+        children: [
+          _buildAvatar(data['nama'] ?? ''),
+          const SizedBox(width: 15),
+          _buildUcapanDetails(data, date),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAvatar(String name) {
+    return Container(
+      width: 30,
+      height: 30,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(shape: BoxShape.circle, color: getColorFromName(name)),
+      child: _buildTextMerriweather(name.isNotEmpty ? name[0].toUpperCase() : '?', color: Colors.white),
+    );
+  }
+
+  Widget _buildUcapanDetails(Map<String, dynamic> data, String date) {
+    return Container(
+      width: MediaQuery.sizeOf(context).width - 105,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildTextMerriweather(
+            toTitleCase(data['nama'] ?? '-'),
+            fontSize: 12,
+            color: Colors.white,
+          ),
+          const SizedBox(height: 5),
+          _buildTextMerriweather(
+            data['ucapan'] ?? '',
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            textAlign: TextAlign.start,
+          ),
+          const SizedBox(height: 5),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: _buildTextMerriweather(
+              date,
+              fontSize: 9,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSendButton() {
+    return Bounce(
+      onPressed: _handleSend,
+      duration: const Duration(milliseconds: 100),
+      child: Container(
+        alignment: Alignment.center,
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.transparent, border: Border.all(width: 1, color: Colors.white)),
+        child: _buildTextMerriweather('Kirim', color: Colors.white),
+      ),
+    );
+  }
+
+  Widget _buildDropdown() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      width: MediaQuery.sizeOf(context).width,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
+      child: DropdownButton(
+        value: dropdownValue.isEmpty ? null : dropdownValue,
+        icon: const Icon(Icons.keyboard_arrow_down_sharp),
+        hint: _buildTextMerriweather("Konfirmasi kehadiran", color: Colors.grey),
+        isExpanded: true,
+        elevation: 0,
+        underline: Container(),
+        onChanged: (String? value) => setState(() => dropdownValue = value!),
+        items: list.map((value) => DropdownMenuItem(value: value, child: _buildTextMerriweather(value))).toList(),
+      ),
+    );
+  }
+
+  Widget _buildGiftContainer(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        children: [
+          _buildAccountInfo("Akhdan Habibie", accountNumberA, 'assets/bca.png', 6, context, 'Salin No. Rekening'),
+          _buildAccountInfo("Akhdan Habibie", phoneNumber, 'assets/dana.png', 40, context, 'Salin No. Telepon'),
+          _buildAccountInfo("Fitri Yulianingsih", accountNumberF, 'assets/bca.png', 6, context, 'Salin No. Rekening'),
+          const SizedBox(height: 20),
+          _buildGiftAddressSection(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAccountInfo(String name, String detail, String asset, double scale, BuildContext context, String copyLabel) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildTextNoto(name, fontWeight: FontWeight.bold, color: Colors.black),
+                const SizedBox(height: 5),
+                _buildTextNoto(detail, color: Colors.black),
+              ],
+            ),
+            Image.asset(asset, scale: scale),
+          ],
+        ),
+        const SizedBox(height: 5),
+        _buildCopy(copyLabel, () => _copyToClipboard(context, detail)),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget _buildGiftAddressSection(BuildContext context) {
+    return Column(
+      children: [
+        const Icon(Icons.card_giftcard, color: Colors.black, size: 40),
+        const SizedBox(height: 20),
+        _buildTextNoto("Anda Juga Bisa Mengirim Kado Fisik Ke Alamat Berikut :", fontSize: 13),
+        const SizedBox(height: 10),
+        _buildTextNoto(alamat, fontSize: 13),
+        const SizedBox(height: 20),
+        _buildCopy('Salin Alamat', () => _copyToClipboard(context, alamat)),
+        const SizedBox(height: 10),
+        _buildWhatsAppButton(context),
+      ],
+    );
+  }
+
+  Widget _buildWhatsAppButton(BuildContext context) {
+    return Bounce(
+      onPressed: openWhatsApp,
+      duration: const Duration(milliseconds: 100),
+      child: Container(
+        alignment: Alignment.center,
+        width: MediaQuery.sizeOf(context).width,
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          border: Border.all(width: 1, color: Colors.black),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/wa.png', scale: 85, color: Colors.black),
+            const SizedBox(width: 10),
+            _buildTextMerriweather("Konfirmasi via WhatsApp", fontSize: 10),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildScheduleItem({required String date, required String time}) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.calendar_month, color: Colors.white),
+            const SizedBox(width: 10),
+            _buildTextMerriweather(
+              date,
+              fontSize: 13,
+              color: Colors.white,
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.schedule, color: Colors.white),
+            const SizedBox(width: 10),
+            _buildTextMerriweather(
+              time,
+              fontSize: 13,
+              color: Colors.white,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTextBonaNova(
+    String text, {
+    double fontSize = 15,
+    TextAlign textAlign = TextAlign.center,
+    FontWeight fontWeight = FontWeight.normal,
+  }) {
+    return Text(
+      text,
+      textAlign: textAlign,
+      style: GoogleFonts.bonaNova(
+        color: Colors.white,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+      ),
+    );
+  }
+
+  Widget _buildTextGreatVibes(
+    String text, {
+    double fontSize = 15,
+    TextAlign textAlign = TextAlign.center,
+    FontWeight fontWeight = FontWeight.normal,
+    Color color = Colors.black,
+  }) {
+    return Text(
+      text,
+      textAlign: textAlign,
+      style: GoogleFonts.greatVibes(
+        color: color,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+      ),
+    );
+  }
+
+  Widget _buildTextNoto(
+    String text, {
+    double fontSize = 15,
+    TextAlign textAlign = TextAlign.center,
+    FontWeight fontWeight = FontWeight.normal,
+    Color color = Colors.black,
+  }) {
+    return Text(
+      text,
+      textAlign: textAlign,
+      style: GoogleFonts.notoSerif(
+        color: color,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+      ),
+    );
+  }
+
+  Widget _buildTextMerriweather(
+    String text, {
+    double fontSize = 15,
+    TextAlign textAlign = TextAlign.center,
+    FontWeight fontWeight = FontWeight.normal,
+    Color color = Colors.black,
+  }) {
+    return Text(
+      text,
+      textAlign: textAlign,
+      style: GoogleFonts.merriweather(
+        color: color,
+        fontSize: fontSize,
+        fontWeight: fontWeight,
+      ),
+    );
+  }
+
+  Widget _buildImageContainer(BuildContext context, String imagePath,
+      double widthFactor, double heightFactor) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    return Container(
-      width: screenWidth * widthFactor,
-      height: screenHeight * heightFactor,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        image: DecorationImage(
-          image: AssetImage(imagePath),
-          fit: BoxFit.cover,
+    return Bounce(
+      onPressed: () {},
+      duration: const Duration(milliseconds: 100),
+      child: Container(
+        width: screenWidth * widthFactor,
+        height: screenHeight * heightFactor,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );
@@ -1252,50 +1199,45 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
           ),
         ),
-        SizedBox(height: 10),
-        ShaderMask(
-          shaderCallback: (Rect bounds) {
-            return LinearGradient(
-              colors: ['BD7D1C'.toColor(), 'EBB23E'.toColor()],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ).createShader(bounds);
-          },
-          child: Text(
-            name,
-            style: CinzelDecorative(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.normal,
-            ),
-          ),
-        ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
+        _buildGradientText(name, fontSize: 25),
+        const SizedBox(height: 10),
         _buildButtonSosMed(
             instagramUsername, () => launchInstagramProfile(instagramUsername)),
-        SizedBox(height: 10),
-        Text(
+        const SizedBox(height: 10),
+        _buildTextMerriweather(
           parents,
-          textAlign: TextAlign.center,
-          style: Desk(color: Colors.white, fontSize: 13),
+          fontSize: 13,
+          color: Colors.white,
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
       ],
     );
   }
 
-  Widget _buildRotatingImage() {
-    return Positioned(
-      top: -215,
-      left: 0,
-      right: 0,
-      child: AnimatedBuilder(
-        animation: _rotationController,
-        builder: (_, child) => Transform.rotate(
-          angle: _rotationController.value * 2 * pi,
-          child: child,
+  Widget _buildGradientText(
+    String text, {
+    double fontSize = 15,
+    TextAlign textAlign = TextAlign.center,
+    FontWeight fontWeight = FontWeight.normal,
+    Color color = Colors.white,
+  }) {
+    return ShaderMask(
+      shaderCallback: (Rect bounds) {
+        return const LinearGradient(
+          colors: [Color(0xFFBD7D1C), Color(0xFFEBB23E)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ).createShader(bounds);
+      },
+      child: Text(
+        text,
+        textAlign: textAlign,
+        style: GoogleFonts.greatVibes(
+          color: color,
+          fontSize: fontSize,
+          fontWeight: fontWeight,
         ),
-        child: Image.asset('assets/role.png'),
       ),
     );
   }
@@ -1305,7 +1247,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       bottom: 10,
       left: 10,
       // right: 0,
-      child: Image.asset('assets/bot.png', scale: 20,),
+      child: Image.asset(
+        'assets/bot.png',
+        scale: 20,
+      ),
     );
   }
 
@@ -1313,7 +1258,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Positioned(
       top: 10,
       right: 10,
-      child: Image.asset('assets/tot.png', scale: 20,),
+      child: Image.asset(
+        'assets/tot.png',
+        scale: 20,
+      ),
     );
   }
 
@@ -1321,10 +1269,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Stack(
       children: [
         ColorFiltered(
-          colorFilter:
-              ColorFilter.mode('000000'.toColor().withOpacity(0.5), BlendMode.xor,),
+          colorFilter: ColorFilter.mode(
+            '000000'.toColor().withOpacity(0.5),
+            BlendMode.xor,
+          ),
           child: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/paper.png'),
                 fit: BoxFit.cover,
@@ -1343,11 +1293,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildButton(String text, IconData icon, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
+    return Bounce(
+      duration: const Duration(milliseconds: 100),
+      onPressed: onTap,
       child: Container(
         width: 150,
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -1356,8 +1307,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, color: Colors.black, size: 20),
-            SizedBox(width: 5),
-            Text(text, style: Desk(fontSize: 13)),
+            const SizedBox(width: 5),
+            _buildTextMerriweather(text, fontSize: 13),
           ],
         ),
       ),
@@ -1365,11 +1316,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildButtonSosMed(String text, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
+    return Bounce(
+      duration: const Duration(milliseconds: 10),
+      onPressed: onTap,
       child: Container(
         width: 78,
-        padding: EdgeInsets.all(5),
+        padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
@@ -1378,8 +1330,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset('assets/instagram.png', scale: 140),
-            SizedBox(width: 5),
-            Text(text, style: Desk(fontSize: 10)),
+            const SizedBox(width: 5),
+            _buildTextMerriweather(text, fontSize: 10),
           ],
         ),
       ),
@@ -1387,36 +1339,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildCopy(String text, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
+    return Bounce(
+      onPressed: onTap,
+      duration: const Duration(milliseconds: 100),
       child: Container(
         alignment: Alignment.center,
         width: MediaQuery.sizeOf(context).width,
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           border: Border.all(width: 1, color: Colors.black),
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Text(text, style: Desk(fontSize: 10)),
+        child: _buildTextMerriweather(text, fontSize: 10),
       ),
     );
   }
 
   Widget _buildTimeBox(int value, String label) {
-  double screenWidth = MediaQuery.of(context).size.width;
-  double boxSize = screenWidth * 0.2;
+    double screenWidth = MediaQuery.of(context).size.width;
+    double boxSize = screenWidth * 0.2;
     return Stack(
       children: [
         Container(
           width: boxSize,
           height: boxSize,
-          margin: EdgeInsets.symmetric(horizontal: 5),
-          padding: EdgeInsets.all(10),
+          margin: const EdgeInsets.symmetric(horizontal: 5),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
               color: 'BD7D1C'.toColor(),
               borderRadius: BorderRadius.circular(10),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   blurRadius: 2,
                   spreadRadius: 1,
@@ -1427,19 +1380,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
+              _buildTextMerriweather(
                 '$value',
-                style: Desk(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
-              Text(
+              _buildTextMerriweather(
                 label,
-                style: Desk(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                ),
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
               ),
             ],
           ),
