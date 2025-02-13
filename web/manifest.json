@@ -1,11 +1,11 @@
 {
-    "name": "wedding_invitation",
-    "short_name": "wedding_invitation",
+    "name": "undangan_pernikahan_akhdan_&_fitri",
+    "short_name": "undangan_pernikahan_akhdan_&_fitri",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Wedding Invitation",
+    "description": "Undangan Pernikahan Akhdan & Fitri",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
