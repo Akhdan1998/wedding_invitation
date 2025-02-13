@@ -43,7 +43,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     Colors.purpleAccent,
     Colors.tealAccent,
     Colors.pinkAccent,
+    Colors.white,
     Colors.indigoAccent,
+    Colors.amberAccent,
+    Colors.blueGrey,
+    Colors.brown,
+    Colors.limeAccent,
+    Colors.cyan,
   ];
 
   Color getColorFromName(String name) {
@@ -219,7 +225,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
           title: _buildTextNoto(
             "Disalin ke clipboard!",
-            fontSize: 14,
+            fontSize: 14, textAlign: TextAlign.start,
           ),
         ),
       ).show(context);
