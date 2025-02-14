@@ -918,8 +918,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           .orderBy('timestamp', descending: true)
           .snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty)
+        if (snapshot.hasError) {
+          debugPrint(snapshot.error.toString());
+        }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Container();
+        }
 
         var docs = snapshot.data!.docs;
         return SizedBox(

@@ -1,31 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <base href="$FLUTTER_BASE_HREF">
-
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="Undangan Pernikahan Akhdan & Fitri">
-
   <meta name="autoplay" content="allowed">
 
-  <!-- iOS meta tags & icons -->
+  <title>Undangan Pernikahan Akhdan & Fitri</title>
+
+  <!-- Apple iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="apple-mobile-web-app-title" content="undangan_pernikahan_akhdan_&_fitri">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="c.jpeg"/>
 
-  <title>undangan_pernikahan_akhdan_&_fitri</title>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions.js"></script>
 
-  <!-- Paksa browser selalu ambil versi terbaru -->
+  <!-- Inisialisasi Firebase (Opsional, jika ingin diatur di sini) -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAO7UzDzBvVSVGem4M3nrL7sKjeM30x4WA",
+      authDomain: "sayingwedding.firebaseapp.com",
+      projectId: "sayingwedding",
+      storageBucket: "sayingwedding.firebasestorage.app",
+      messagingSenderId: "676660103213",
+      appId: "1:676660103213:web:7bc6bdf4be507440b0d0a4"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+  <!-- Flutter -->
+  <base href="$FLUTTER_BASE_HREF">
   <link rel="manifest" href="manifest.json?v=2">
-
 </head>
 <body>
-<script src="main.dart.js?v=2"></script>
 <script src="flutter_bootstrap.js?v=2" async></script>
+<script src="main.dart.js?v=2"></script>
 </body>
 </html>

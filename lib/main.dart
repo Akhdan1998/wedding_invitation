@@ -8,14 +8,27 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    debugPrint("Firebase initialized successfully.");
+  } catch (e) {
+    debugPrint("Firebase initialization error: $e");
+  }
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   Future<User?> _signInAnonymously() async {
+    if (!mounted) return null;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? savedUid = prefs.getString('anonymous_uid');
 
