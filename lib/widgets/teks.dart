@@ -40,6 +40,7 @@ TextStyle Desk({
   double fontSize = 15,
   FontWeight fontWeight = FontWeight.normal,
   Color color = Colors.black,
+  TextAlign textAlign = TextAlign.center,
 }) {
   return GoogleFonts.merriweather(
     fontSize: fontSize,

@@ -35,6 +35,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final AudioPlayer _audioPlayer = AudioPlayer();
   final TextEditingController nama = TextEditingController();
   final TextEditingController ucapan = TextEditingController();
+
   final List<Color> colors = [
     Colors.redAccent,
     Colors.greenAccent,
@@ -77,7 +78,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         "&text=${Uri.encodeComponent("Akhdan & Fitri Wedding")}"
         "&details=${Uri.encodeComponent("Jangan lupa hadir di acara pernikahan kami!")}"
         "&location=${Uri.encodeComponent("Jakarta, Indonesia")}"
-        "&dates=${_formatDateTime(eventDate)}/${_formatDateTime(eventDate.add(const Duration(hours: 3),),)}");
+        "&dates=${_formatDateTime(eventDate)}/${_formatDateTime(
+      eventDate.add(
+        const Duration(hours: 3),
+      ),
+    )}");
 
     if (await canLaunchUrl(googleCalendarUrl)) {
       await launchUrl(googleCalendarUrl, mode: LaunchMode.externalApplication);
@@ -145,7 +150,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     if (kIsWeb) {
       final ByteData data = await rootBundle.load(audioPath);
       final List<int> bytes = data.buffer.asUint8List();
-      final String base64String = "data:audio/mp3;base64,${base64Encode(bytes)}";
+      final String base64String =
+          "data:audio/mp3;base64,${base64Encode(bytes)}";
 
       await _audioPlayer.play(UrlSource(base64String));
     } else {
@@ -172,7 +178,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       DelightToastBar(
         position: DelightSnackbarPosition.top,
         animationDuration: const Duration(seconds: 3),
-        builder: (context) => ToastCard(title: _buildTextMerriweather("Harap isi semua kolom!", fontSize: 14)),
+        builder: (context) => ToastCard(
+            title:
+                _buildTextMerriweather("Harap isi semua kolom!", fontSize: 14)),
       ).show(context);
       return;
     }
@@ -225,7 +233,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
           title: _buildTextNoto(
             "Disalin ke clipboard!",
-            fontSize: 14, textAlign: TextAlign.start,
+            fontSize: 14,
+            textAlign: TextAlign.start,
           ),
         ),
       ).show(context);
@@ -327,8 +336,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
                 const SizedBox(height: 30),
                 _buildTextBonaNova(
-                  'Tanpa Mengurangi Rasa Hormat, Kami Mengundang Anda Untuk Berhadir Di Acara Pernikahan Kami.',
-                  fontSize: 13,
+                  'Kepada Bpk/Ibu/Saudara/i',
+                  fontSize: 12,
                 ),
                 const SizedBox(height: 30),
                 _buildTextBonaNova(
@@ -336,6 +345,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ? '$guestName & Partner'
                       : 'Agus Buntung & Partner',
                   fontSize: 20,
+                ),
+                const SizedBox(height: 30),
+                _buildTextBonaNova(
+                  'Tanpa Mengurangi Rasa Hormat, Kami Mengundang Anda Untuk Berhadir Di Acara Pernikahan Kami.',
+                  fontSize: 13,
                 ),
                 const SizedBox(height: 30),
                 _buildButton('Buka Undangan', Icons.drafts, () {
@@ -437,7 +451,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       imagePath: 'assets/man.png',
                       instagramUsername: 'akhddan',
                       parents:
-                      'Anak kedua dari\nBapak Drs. Muhammad Syakur & Ibu Dra. Hasanah',
+                          'Anak kedua dari\nBapak Drs. Muhammad Syakur & Ibu Dra. Hasanah',
                     ),
                     const SizedBox(height: 30),
                     _buildTextGreatVibes('&',
@@ -447,7 +461,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       name: 'Fitri Yulianingsih, S.Ak',
                       imagePath: 'assets/girl.png',
                       instagramUsername: 'yliafithri',
-                      parents: 'Anak kedua dari\nBapak Sudiarjo & Ibu Nuraeni S',
+                      parents:
+                          'Anak kedua dari\nBapak Sudiarjo & Ibu Nuraeni S',
                     ),
                   ],
                 ),
@@ -516,7 +531,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 30),
                     _buildButton('Lihat Lokasi', Icons.location_pin, () async {
                       final Uri googleMapsAppUrl =
-                      Uri.parse("geo:0,0?q=ermaVWha4hcJXcpY7");
+                          Uri.parse("geo:0,0?q=ermaVWha4hcJXcpY7");
                       final Uri googleMapsWebUrl = Uri.parse(
                           "https://maps.app.goo.gl/ermaVWha4hcJXcpY7?g_st=com.google.maps.preview.copy");
 
@@ -533,7 +548,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               const SizedBox(height: 50),
               //_buildGalleryPage
               Container(
-                padding: const EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 20),
+                padding: const EdgeInsets.only(
+                    left: 10, right: 10, bottom: 20, top: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -546,7 +562,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildImageContainer(context, 'assets/a.jpeg', 0.38, 0.5),
+                        _buildImageContainer(
+                            context, 'assets/a.jpeg', 0.38, 0.5),
                         Column(
                           children: [
                             _buildImageContainer(
@@ -571,7 +588,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 context, 'assets/d.jpeg', 0.48, 0.24),
                           ],
                         ),
-                        _buildImageContainer(context, 'assets/e.jpeg', 0.38, 0.5),
+                        _buildImageContainer(
+                            context, 'assets/e.jpeg', 0.38, 0.5),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -617,14 +635,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 20),
                     _buildTextMerriweather(
                       "Kirimkan ucapan dan doa untuk kedua mempelai",
-                      color: Colors.white,fontSize: 13,
+                      color: Colors.white,
+                      fontSize: 13,
                     ),
                     const SizedBox(height: 20),
                     TextFieldCustom(
                       controller: nama,
                       obscureText: false,
                       height: MediaQuery.of(context).size.height * 0.1,
-                      borderSide: const BorderSide(color: Colors.black, width: 2.0),
+                      borderSide:
+                          const BorderSide(color: Colors.black, width: 2.0),
                       hintText: 'Nama',
                       textCapitalization: TextCapitalization.words,
                     ),
@@ -633,14 +653,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       controller: ucapan,
                       obscureText: false,
                       height: MediaQuery.of(context).size.height * 0.1,
-                      borderSide: const BorderSide(color: Colors.black, width: 2.0),
+                      borderSide:
+                          const BorderSide(color: Colors.black, width: 2.0),
                       hintText: 'Ucapan',
                       textCapitalization: TextCapitalization.sentences,
                     ),
                     const SizedBox(height: 20),
                     _buildDropdown(),
                     const SizedBox(height: 20),
-                    isLoading ? const Center(child: CircularProgressIndicator(color: Colors.white)) : _buildSendButton(),
+                    isLoading
+                        ? const Center(
+                            child:
+                                CircularProgressIndicator(color: Colors.white))
+                        : _buildSendButton(),
                     // (isLoading == true)
                     //     ? const Center(
                     //         child: CircularProgressIndicator(
@@ -851,7 +876,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 20),
                     _buildTextMerriweather(
                       'Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i/teman-teman, berkenan hadir dan memberikan do’a restu kepada Kami.\n\nKami yang berhagia',
-                      color: Colors.white, fontSize: 13,
+                      color: Colors.white,
+                      fontSize: 13,
                     ),
                     const SizedBox(height: 20),
                     _buildGradientText(
@@ -887,9 +913,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   Widget _buildUcapanList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('ucapan_kehadiran').orderBy('timestamp', descending: true).snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('ucapan_kehadiran')
+          .orderBy('timestamp', descending: true)
+          .snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) return Container();
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty)
+          return Container();
 
         var docs = snapshot.data!.docs;
         return SizedBox(
@@ -908,13 +938,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget _buildUcapanItem(QueryDocumentSnapshot doc) {
     var data = doc.data() as Map<String, dynamic>;
     String date = data['timestamp'] != null
-        ? DateFormat('dd MMM yyyy || HH:mm').format(DateTime.fromMillisecondsSinceEpoch(data['timestamp'].seconds * 1000).toLocal())
+        ? DateFormat('dd MMM yyyy || HH:mm').format(
+            DateTime.fromMillisecondsSinceEpoch(
+                    data['timestamp'].seconds * 1000)
+                .toLocal())
         : '-';
 
     return Container(
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(color: Colors.grey.withOpacity(0.2), borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(
+          color: Colors.grey.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(10)),
       child: Row(
         children: [
           _buildAvatar(data['nama'] ?? ''),
@@ -930,8 +965,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       width: 30,
       height: 30,
       alignment: Alignment.center,
-      decoration: BoxDecoration(shape: BoxShape.circle, color: getColorFromName(name)),
-      child: _buildTextMerriweather(name.isNotEmpty ? name[0].toUpperCase() : '?', color: Colors.white),
+      decoration:
+          BoxDecoration(shape: BoxShape.circle, color: getColorFromName(name)),
+      child: _buildTextMerriweather(
+          name.isNotEmpty ? name[0].toUpperCase() : '?',
+          color: Colors.white),
     );
   }
 
@@ -975,7 +1013,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.transparent, border: Border.all(width: 1, color: Colors.white)),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.transparent,
+            border: Border.all(width: 1, color: Colors.white)),
         child: _buildTextMerriweather('Kirim', color: Colors.white),
       ),
     );
@@ -985,16 +1026,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       width: MediaQuery.sizeOf(context).width,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10), color: Colors.white),
       child: DropdownButton(
         value: dropdownValue.isEmpty ? null : dropdownValue,
         icon: const Icon(Icons.keyboard_arrow_down_sharp),
-        hint: _buildTextMerriweather("Konfirmasi kehadiran", color: Colors.grey),
+        hint:
+            _buildTextMerriweather("Konfirmasi kehadiran", color: Colors.grey),
         isExpanded: true,
         elevation: 0,
         underline: Container(),
         onChanged: (String? value) => setState(() => dropdownValue = value!),
-        items: list.map((value) => DropdownMenuItem(value: value, child: _buildTextMerriweather(value))).toList(),
+        items: list
+            .map((value) => DropdownMenuItem(
+                value: value, child: _buildTextMerriweather(value)))
+            .toList(),
       ),
     );
   }
@@ -1008,9 +1054,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
       child: Column(
         children: [
-          _buildAccountInfo("Akhdan Habibie", accountNumberA, 'assets/bca.png', 6, context, 'Salin No. Rekening'),
-          _buildAccountInfo("Akhdan Habibie", phoneNumber, 'assets/dana.png', 40, context, 'Salin No. Telepon'),
-          _buildAccountInfo("Fitri Yulianingsih", accountNumberF, 'assets/bca.png', 6, context, 'Salin No. Rekening'),
+          _buildAccountInfo("Akhdan Habibie", accountNumberA, 'assets/bca.png',
+              6, context, 'Salin No. Rekening'),
+          _buildAccountInfo("Akhdan Habibie", phoneNumber, 'assets/dana.png',
+              40, context, 'Salin No. Telepon'),
+          _buildAccountInfo("Fitri Yulianingsih", accountNumberF,
+              'assets/bca.png', 6, context, 'Salin No. Rekening'),
           const SizedBox(height: 20),
           _buildGiftAddressSection(context),
         ],
@@ -1018,7 +1067,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildAccountInfo(String name, String detail, String asset, double scale, BuildContext context, String copyLabel) {
+  Widget _buildAccountInfo(String name, String detail, String asset,
+      double scale, BuildContext context, String copyLabel) {
     return Column(
       children: [
         Row(
@@ -1027,7 +1077,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildTextNoto(name, fontWeight: FontWeight.bold, color: Colors.black),
+                _buildTextNoto(name,
+                    fontWeight: FontWeight.bold, color: Colors.black),
                 const SizedBox(height: 5),
                 _buildTextNoto(detail, color: Colors.black),
               ],
@@ -1047,7 +1098,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       children: [
         const Icon(Icons.card_giftcard, color: Colors.black, size: 40),
         const SizedBox(height: 20),
-        _buildTextNoto("Anda Juga Bisa Mengirim Kado Fisik Ke Alamat Berikut :", fontSize: 13),
+        _buildTextNoto("Anda Juga Bisa Mengirim Kado Fisik Ke Alamat Berikut :",
+            fontSize: 13),
         const SizedBox(height: 10),
         _buildTextNoto(alamat, fontSize: 13),
         const SizedBox(height: 20),
