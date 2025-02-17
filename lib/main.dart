@@ -1324,7 +1324,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/paper.jpg'),
+                image: AssetImage('assets/paper.png'),
                 fit: BoxFit.cover,
               ),
             ),
