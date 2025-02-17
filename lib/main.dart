@@ -309,7 +309,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _playMusic() async {
-    String audioPath = 'assets/audio/music.mp3';
+    String audioPath = 'assets/audio/musik.mp3';
 
     if (kIsWeb) {
       final ByteData data = await rootBundle.load(audioPath);
@@ -1324,7 +1324,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/paper.png'),
+                image: AssetImage('assets/paper.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -1377,7 +1377,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/instagram.png', scale: 140),
+            Image.asset('assets/instagram.jpg', scale: 140),
             const SizedBox(width: 5),
             _buildTextMerriweather(text, fontSize: 10),
           ],
