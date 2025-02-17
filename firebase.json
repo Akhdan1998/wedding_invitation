@@ -63,6 +63,60 @@
         "headers": [
           { "key": "Access-Control-Allow-Origin", "value": "*" }
         ]
+      },
+      {
+        "source": "**/*.js",
+        "headers": [
+          { "key": "Content-Encoding", "value": "gzip" }
+        ]
+      },
+      {
+        "source": "**/*.css",
+        "headers": [
+          { "key": "Content-Encoding", "value": "gzip" }
+        ]
+      },
+      {
+        "source": "**/*.html",
+        "headers": [
+          { "key": "Content-Encoding", "value": "gzip" }
+        ]
+      },
+      {
+        "source": "**/*.json",
+        "headers": [
+          { "key": "Content-Encoding", "value": "gzip" }
+        ]
+      },
+      {
+        "source": "**/*.wasm",
+        "headers": [
+          { "key": "Content-Encoding", "value": "gzip" }
+        ]
+      },
+      {
+        "source": "**/*.js",
+        "headers": [
+          { "key": "Content-Encoding", "value": "br" }
+        ]
+      },
+      {
+        "source": "**/*.css",
+        "headers": [
+          { "key": "Content-Encoding", "value": "br" }
+        ]
+      },
+      {
+        "source": "**/*.html",
+        "headers": [
+          { "key": "Content-Encoding", "value": "br" }
+        ]
+      },
+      {
+        "source": "**/*.wasm",
+        "headers": [
+          { "key": "Content-Encoding", "value": "br" }
+        ]
       }
     ],
     "rewrites": [
