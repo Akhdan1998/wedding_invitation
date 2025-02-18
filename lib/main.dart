@@ -182,7 +182,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Timer? _timer;
   Duration _remainingTime = Duration.zero;
   String dropdownValue = list.first;
-  String guestName = "Tamu Undangan";
+  String guestName = "Agus Buntung & Partner";
   bool isPlaying = false;
   bool isLoading = false;
   final PageController _pageController = PageController();
@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final String accountNumberF = '5910115342';
   final String phoneNumber = '081290763984';
   final String phoneNumberWA = "6281290763984";
-  final String message = "Halo, Pendekar Gendut!";
+  final String message = "Cuy, ada something on the way ke rumah lo. Kalau udah landed, hit me up ya! 🎁😉";
   final String schedule = "Sabtu, 8 November 2025";
   final String alamat =
       'Jalan Curug Agung, Gang Mushola, Rt.02/10, Tanah Baru, Beji, Depok, Jawa Barat\n(Gerbang Warna Biru)';
@@ -480,7 +480,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final String guestName = Uri.base.queryParameters["name"] ?? "";
     return Stack(
       children: [
-        // _buildRotatingImage(),
         _buildTopImage(),
         Align(
           alignment: Alignment.center,
