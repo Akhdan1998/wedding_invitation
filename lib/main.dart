@@ -309,7 +309,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _playMusic() async {
-    String audioPath = 'assets/audio/musik.mp3';
+    String audioPath = 'assets/audio/music.mp3';
 
     if (kIsWeb) {
       final ByteData data = await rootBundle.load(audioPath);
@@ -623,7 +623,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 30),
                     _buildIdentityItem(
                       name: 'Fitri Yulianingsih, S.Ak',
-                      imagePath: 'assets/girl.png',
+                      imagePath: 'assets/girl.jpg',
                       instagramUsername: 'yliafithri',
                       parents:
                           'Anak kedua dari\nBapak Sudiarjo & Ibu Nuraeni S',
@@ -1297,7 +1297,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       // right: 0,
       child: Image.asset(
         'assets/bot.png',
-        scale: 20,
+        scale: 5,
       ),
     );
   }
@@ -1308,7 +1308,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       right: 10,
       child: Image.asset(
         'assets/tot.png',
-        scale: 20,
+        scale: 6,
       ),
     );
   }
@@ -1377,7 +1377,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/instagram.jpg', scale: 140),
+            Image.asset('assets/instagram.jpg', scale: 50),
             const SizedBox(width: 5),
             _buildTextMerriweather(text, fontSize: 10),
           ],
