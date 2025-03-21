@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final String accountNumberF = '5910115342';
   final String phoneNumber = '081290763984';
   final String phoneNumberWA = "6281290763984";
-  final String message = "Cuy, ada something on the way ke rumah lo. Kalau udah landed, hit me up ya! 🎁😉";
+  final String message = "Cuy, ada something on the way ke rumah lo. Kalau udah landed, hit me up ya!\n-[nama]";
   final String schedule = "Sabtu, 8 November 2025";
   final String alamat =
       'Jalan Curug Agung, Gang Mushola, Rt.02/10, Tanah Baru, Beji, Depok, Jawa Barat\n(Gerbang Warna Biru)';
@@ -851,7 +851,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               const SizedBox(height: 50),
               //_build
               _buildTextMerriweather(
-                'Created by Pendekar Gendut',
+                'Dibuat Oleh Pendekar Gendut',
                 fontSize: 8,
                 color: Colors.white,
               ),
@@ -1406,13 +1406,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget _buildTimeBox(int value, String label) {
     double screenWidth = MediaQuery.of(context).size.width;
     double boxSize = screenWidth * 0.2;
+    double fontSizeValue = screenWidth * 0.06;
+    double fontSizeLabel = screenWidth * 0.04;
+    double imageScale = screenWidth / 400;
     return Stack(
       children: [
         Container(
           width: boxSize,
           height: boxSize,
           margin: const EdgeInsets.symmetric(horizontal: 5),
-          padding: const EdgeInsets.all(10),
+          padding: EdgeInsets.all(screenWidth * 0.025),
           decoration: BoxDecoration(
               color: 'BD7D1C'.toColor(),
               borderRadius: BorderRadius.circular(10),
@@ -1429,12 +1432,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             children: [
               _buildTextMerriweather(
                 '$value',
-                fontSize: 24,
+                fontSize: fontSizeValue,
                 fontWeight: FontWeight.bold,
               ),
               _buildTextMerriweather(
                 label,
-                fontSize: 15,
+                fontSize: fontSizeLabel,
                 fontWeight: FontWeight.bold,
               ),
             ],
