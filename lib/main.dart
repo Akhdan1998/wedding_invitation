@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:delightful_toast/delight_toast.dart';
@@ -165,8 +166,8 @@ class ErrorScreen extends StatelessWidget {
 //
 
 List<String> list = <String>[
-  'Saya akan datang',
-  'Maaf, Saya tidak bisa datang'
+  'Count me in, gue dateng',
+  'Big sorry, tapi I can\'t make it'
 ];
 
 class HomePage extends StatefulWidget {
@@ -725,15 +726,33 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildImageContainer(
-                            context, 'assets/a.jpeg', 0.38, 0.5),
+                        _buildImageCarousel(
+                          context,
+                          ['assets/a.jpeg', 'assets/g.jpeg', 'assets/e.jpeg'],
+                          0.38,
+                          0.5,
+                          const Duration(seconds: 2),
+                          Axis.horizontal,
+                        ),
                         Column(
                           children: [
-                            _buildImageContainer(
-                                context, 'assets/b.jpeg', 0.48, 0.24),
+                            _buildImageCarousel(
+                              context,
+                              ['assets/b.jpeg', 'assets/berdua.jpeg', 'assets/c.jpeg'],
+                              0.48,
+                              0.24,
+                              const Duration(seconds: 3),
+                              Axis.vertical,
+                            ),
                             const SizedBox(height: 12),
-                            _buildImageContainer(
-                                context, 'assets/berdua.jpeg', 0.48, 0.24),
+                            _buildImageCarousel(
+                              context,
+                              ['assets/berdua.jpeg', 'assets/b.jpeg', 'assets/g.jpeg'],
+                              0.48,
+                              0.24,
+                              const Duration(seconds: 4),
+                              Axis.horizontal,
+                            ),
                           ],
                         ),
                       ],
@@ -744,19 +763,44 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       children: [
                         Column(
                           children: [
-                            _buildImageContainer(
-                                context, 'assets/c.jpeg', 0.48, 0.24),
+                            _buildImageCarousel(
+                              context,
+                              ['assets/a.jpeg', 'assets/berdua.jpeg', 'assets/c.jpeg'],
+                              0.48,
+                              0.24,
+                              const Duration(seconds: 2),
+                              Axis.horizontal,
+                            ),
                             const SizedBox(height: 12),
-                            _buildImageContainer(
-                                context, 'assets/d.jpeg', 0.48, 0.24),
+                            _buildImageCarousel(
+                              context,
+                              ['assets/d.jpeg', 'assets/b.jpeg', 'assets/g.jpeg'],
+                              0.48,
+                              0.24,
+                              const Duration(seconds: 3),
+                              Axis.vertical,
+                            ),
                           ],
                         ),
-                        _buildImageContainer(
-                            context, 'assets/e.jpeg', 0.38, 0.5),
+                        _buildImageCarousel(
+                          context,
+                          ['assets/a.jpeg', 'assets/e.jpeg', 'assets/c.jpeg'],
+                          0.38,
+                          0.5,
+                          const Duration(seconds: 4),
+                          Axis.horizontal,
+                        ),
                       ],
                     ),
                     const SizedBox(height: 20),
-                    _buildImageContainer(context, 'assets/g.jpeg', 0.9, 0.3),
+                    _buildImageCarousel(
+                      context,
+                      ['assets/a.jpeg', 'assets/b.jpeg', 'assets/c.jpeg'],
+                      0.9,
+                      0.3,
+                      const Duration(seconds: 2),
+                      Axis.vertical,
+                    ),
                   ],
                 ),
               ),
@@ -1203,24 +1247,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildImageContainer(BuildContext context, String imagePath,
-      double widthFactor, double heightFactor) {
+  Widget _buildImageCarousel(BuildContext context, List<String> imagePaths,
+      double widthFactor, double heightFactor, Duration autoPlayInterval, Axis scrollDirection) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    return Bounce(
-      onPressed: () {},
-      duration: const Duration(milliseconds: 100),
-      child: Container(
-        width: screenWidth * widthFactor,
-        height: screenHeight * heightFactor,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          image: DecorationImage(
-            image: AssetImage(imagePath),
-            fit: BoxFit.cover,
-          ),
+    return SizedBox(
+      width: screenWidth * widthFactor,
+      height: screenHeight * heightFactor,
+      child: CarouselSlider(
+        options: CarouselOptions(
+          height: screenHeight * heightFactor,
+          autoPlay: true,
+          autoPlayInterval: autoPlayInterval,
+          viewportFraction: 1.0,
+          scrollDirection: scrollDirection,
+          // scrollPhysics: NeverScrollableScrollPhysics(),
         ),
+        items: imagePaths.map((imagePath) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(
+              imagePath,
+              width: screenWidth * widthFactor,
+              height: screenHeight * heightFactor,
+              fit: BoxFit.cover,
+            ),
+          );
+        }).toList(),
       ),
     );
   }
