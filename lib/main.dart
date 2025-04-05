@@ -662,7 +662,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 20),
                     _buildScheduleItem(
                       date: schedule,
-                      time: 'Pukul : 09:00 WIB - 10:00',
+                      time: 'Pukul : 09:00 WIB - 10:00 WIB',
                     ),
                     const SizedBox(height: 30),
                     _buildGradientText(
