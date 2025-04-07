@@ -16,8 +16,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'firebase_options.dart';
@@ -85,40 +83,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Future<User?> _signInAnonymously() async {
-    if (!mounted) return null;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? savedUid = prefs.getString('anonymous_uid');
-
-    if (savedUid != null) {
-      return FirebaseAuth.instance.currentUser;
-    }
-
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInAnonymously();
-      await prefs.setString('anonymous_uid', userCredential.user!.uid);
-      return userCredential.user;
-    } catch (e) {
-      debugPrint("Error login anonim: $e");
-      return null;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       color: Colors.transparent,
       debugShowCheckedModeBanner: false,
-      home: FutureBuilder<User?>(
-        future: _signInAnonymously(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LoadingScreen();
-          }
-          return snapshot.hasData ? const HomePage() : const ErrorScreen();
-        },
-      ),
+      home: HomePage(),
     );
   }
 }
@@ -131,39 +101,6 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
         PointerDeviceKind.trackpad,
       };
 }
-
-class LoadingScreen extends StatelessWidget {
-  const LoadingScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(
-          color: Colors.black,
-        ),
-      ),
-    );
-  }
-}
-
-class ErrorScreen extends StatelessWidget {
-  const ErrorScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text(
-          "Fix your connection dulu, baru kita ngomongin masa depan.",
-          style: Desk(textAlign: TextAlign.center),
-        ),
-      ),
-    );
-  }
-}
-
-//
 
 List<String> list = <String>[
   'Count me in, gue dateng',
@@ -336,10 +273,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _handleSend() async {
-    print("Mengirim data ke Firestore...");
+    debugPrint("Mengirim data ke Firestore...");
 
     if (nama.text.isEmpty || ucapan.text.isEmpty || dropdownValue.isEmpty) {
-      print("Data tidak lengkap!");
+      debugPrint("Data tidak lengkap!");
       DelightToastBar(
         position: DelightSnackbarPosition.top,
         animationDuration: const Duration(seconds: 3),
@@ -353,24 +290,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     setState(() => isLoading = true);
 
     try {
-      // Pastikan pengguna memiliki UID (untuk Flutter Web, auth bisa null)
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        await FirebaseAuth.instance.signInAnonymously();
-        user = FirebaseAuth.instance.currentUser;
-      }
-      String uid = user?.uid ?? "anonymous";
-
-      // Kirim data ke Firestore
       await FirebaseFirestore.instance.collection('ucapan_kehadiran').add({
         'nama': nama.text,
         'ucapan': ucapan.text,
         'kehadiran': dropdownValue,
-        'uid': uid,
         'timestamp': FieldValue.serverTimestamp(),
       });
 
-      print("Data berhasil dikirim!");
+      debugPrint("Data berhasil dikirim!");
 
       if (!mounted) return;
       setState(() {
@@ -379,7 +306,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         dropdownValue = list.first;
       });
     } catch (e) {
-      print('ERROR: $e');
+      debugPrint('ERROR: $e');
     }
 
     if (!mounted) return;
@@ -924,9 +851,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          debugPrint(snapshot.error.toString());
+          debugPrint("Firestore error: ${snapshot.error}");
         }
+
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          debugPrint('Tidak ada ucapan ditemukan');
           return Container();
         }
 
