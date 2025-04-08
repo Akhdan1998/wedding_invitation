@@ -20,6 +20,7 @@ import 'package:supercharged/supercharged.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'firebase_options.dart';
 import 'package:universal_html/html.dart' as html;
+List<QueryDocumentSnapshot> globalUcapanList = [];
 
 class Star {
   double x, y, speed;
@@ -62,6 +63,15 @@ class StarPainter extends CustomPainter {
   bool shouldRepaint(StarPainter oldDelegate) => true;
 }
 
+Future<void> fetchUcapanData() async {
+  final snapshot = await FirebaseFirestore.instance
+      .collection('ucapan_kehadiran')
+      .orderBy('timestamp', descending: true)
+      .get();
+
+  globalUcapanList = snapshot.docs;
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
@@ -72,6 +82,7 @@ void main() async {
   } catch (e) {
     debugPrint("Firebase initialization error: $e");
   }
+  await fetchUcapanData();
   runApp(const MyApp());
 }
 
@@ -381,7 +392,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: CircularProgressIndicator(
             color: Colors.transparent,
           ),
-        ), // Tampilkan loading
+        ),
       );
     }
     return Scaffold(
@@ -392,7 +403,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             PageView(
               scrollDirection: Axis.vertical,
               controller: _pageController,
-              physics: const ClampingScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               children: [
                 _buildHomePage(),
                 _buildUIPage(),
@@ -411,9 +422,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         _buildTopImage(),
         Align(
           alignment: Alignment.center,
-          child: Container(
-            padding: const EdgeInsets.all(50),
+          child: Center(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildTextNoto(
@@ -438,9 +449,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   fontSize: 20,
                 ),
                 const SizedBox(height: 30),
-                _buildTextBonaNova(
-                  'Tanpa Mengurangi Rasa Hormat, Kami Mengundang Anda Untuk Berhadir Di Acara Pernikahan Kami.',
-                  fontSize: 13,
+                Container(
+                  padding: EdgeInsets.only(left: 35, right: 35),
+                  child: _buildTextBonaNova(
+                    'Tanpa Mengurangi Rasa Hormat, Kami Mengundang Anda Untuk Berhadir Di Acara Pernikahan Kami.',
+                    fontSize: 13,
+                  ),
                 ),
                 const SizedBox(height: 30),
                 _buildButton('Buka Undangan', Icons.drafts, () {
