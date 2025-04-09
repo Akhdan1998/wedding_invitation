@@ -20,6 +20,7 @@ import 'package:supercharged/supercharged.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'firebase_options.dart';
 import 'package:universal_html/html.dart' as html;
+
 List<QueryDocumentSnapshot> globalUcapanList = [];
 
 class Star {
@@ -97,7 +98,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      color: Colors.transparent,
+      color: Colors.black,
       debugShowCheckedModeBanner: false,
       home: HomePage(),
     );
@@ -130,7 +131,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   List<Star> _stars = [];
   Timer? _timer;
   Duration _remainingTime = Duration.zero;
-  String dropdownValue = list.first;
+  String? dropdownValue;
   String guestName = "Agus Buntung & Partner";
   bool isPlaying = false;
   bool isLoading = false;
@@ -141,7 +142,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final String accountNumberF = '5910115342';
   final String phoneNumber = '081290763984';
   final String phoneNumberWA = "6281290763984";
-  final String message = "Cuy, ada something on the way ke rumah lo. Kalau udah landed, hit me up ya!\n-[nama]";
+  final String message =
+      "Cuy, ada something on the way ke rumah lo. Kalau udah landed, hit me up ya!\n-[nama]";
   final String schedule = "Sabtu, 8 November 2025";
   final String alamat =
       'Jalan Curug Agung, Gang Mushola, Rt.02/10, Tanah Baru, Beji, Depok, Jawa Barat\n(Gerbang Warna Biru)';
@@ -286,7 +288,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void _handleSend() async {
     debugPrint("Mengirim data ke Firestore...");
 
-    if (nama.text.isEmpty || ucapan.text.isEmpty || dropdownValue.isEmpty) {
+    if (nama.text.isEmpty || ucapan.text.isEmpty || dropdownValue!.isEmpty) {
       debugPrint("Data tidak lengkap!");
       DelightToastBar(
         position: DelightSnackbarPosition.top,
@@ -314,7 +316,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       setState(() {
         nama.clear();
         ucapan.clear();
-        dropdownValue = list.first;
+        dropdownValue = null;
       });
     } catch (e) {
       debugPrint('ERROR: $e');
@@ -383,39 +385,103 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   if (screenWidth == 0.0 || screenHeight == 0.0) {
+  //     return const Scaffold(
+  //       backgroundColor: Colors.black,
+  //       body: Center(
+  //         child: CircularProgressIndicator(
+  //           color: Colors.white,
+  //         ),
+  //       ),
+  //     );
+  //   }
+  //   return Scaffold(
+  //     backgroundColor: Colors.black,
+  //     body: Stack(
+  //       children: [
+  //         _buildBackground(
+  //           PageView(
+  //             scrollDirection: Axis.vertical,
+  //             controller: _pageController,
+  //             physics: const NeverScrollableScrollPhysics(),
+  //             children: [
+  //               _buildHomePage(),
+  //               _buildUIPage(),
+  //             ],
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
-    if (screenWidth == 0.0 || screenHeight == 0.0) {
+    final screenSize = MediaQuery.of(context).size;
+
+    if (screenSize.width == 0.0 || screenSize.height == 0.0) {
       return const Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.black,
         body: Center(
-          child: CircularProgressIndicator(
-            color: Colors.transparent,
-          ),
+          child: CircularProgressIndicator(color: Colors.white),
         ),
       );
     }
+
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          _buildBackground(
-            PageView(
-              scrollDirection: Axis.vertical,
-              controller: _pageController,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                _buildHomePage(),
-                _buildUIPage(),
-              ],
-            ),
-          ),
-        ],
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isMobile = constraints.maxWidth < 600;
+
+          final content = PageView(
+            scrollDirection: Axis.vertical,
+            controller: _pageController,
+            physics: const NeverScrollableScrollPhysics(),
+            children: isMobile
+                ? [
+                    _buildHomePage(isMobile),
+                    _buildUIPage(isMobile),
+                  ]
+                : [
+                    _buildUIPage(isMobile),
+                  ],
+          );
+
+          if (isMobile) {
+            return _buildBackground(content);
+          }
+
+          return Row(
+            children: [
+              SizedBox(
+                width: constraints.maxWidth >= 1000
+                    ? 1000
+                    : constraints.maxWidth * 0.5,
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: CustomPaint(
+                        painter: StarPainter(_stars),
+                      ),
+                    ),
+                    _buildHomePage(isMobile),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: _buildBackground(content),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget _buildHomePage() {
+  Widget _buildHomePage(bool isMobile) {
     final String guestName = Uri.base.queryParameters["name"] ?? "";
     return Stack(
       children: [
@@ -456,23 +522,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     fontSize: 13,
                   ),
                 ),
-                const SizedBox(height: 30),
-                _buildButton('Buka Undangan', Icons.drafts, () {
+                SizedBox(height: isMobile ? 30 : 0),
+                isMobile ? _buildButton('Buka Undangan', Icons.drafts, () {
                   _playMusic();
                   _pageController.animateToPage(1,
                       duration: const Duration(milliseconds: 500),
                       curve: Curves.easeInOut);
-                }),
+                }) : Container(),
               ],
             ),
           ),
         ),
         _buildBottomImage(),
+        isMobile ? Container() : _buildMusic(),
       ],
     );
   }
 
-  Widget _buildUIPage() {
+  Widget _buildUIPage(bool isMobile) {
     return Stack(
       children: [
         SingleChildScrollView(
@@ -481,18 +548,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             children: [
               //_buildCountdownPage
               Container(
-                padding: const EdgeInsets.only(top: 20),
+                padding: EdgeInsets.only(top: isMobile ? 50 : 25),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: 200,
-                      height: 300,
+                      width: isMobile ? 200 : 150,
+                      height: isMobile ? 300 : 250,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         image: const DecorationImage(
-                            image: AssetImage('assets/wkwkwk.jpeg'),
-                            fit: BoxFit.cover),
+                          image: AssetImage('assets/wkwkwk.jpeg'),
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 30),
@@ -516,10 +584,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildTimeBox(_remainingTime.inDays, 'Hari'),
-                        _buildTimeBox(_remainingTime.inHours % 24, 'Jam'),
-                        _buildTimeBox(_remainingTime.inMinutes % 60, 'Menit'),
-                        _buildTimeBox(_remainingTime.inSeconds % 60, 'Detik'),
+                        _buildTimeBox(_remainingTime.inDays, 'Hari',
+                            isMobile: isMobile),
+                        _buildTimeBox(_remainingTime.inHours % 24, 'Jam',
+                            isMobile: isMobile),
+                        _buildTimeBox(_remainingTime.inMinutes % 60, 'Menit',
+                            isMobile: isMobile),
+                        _buildTimeBox(_remainingTime.inSeconds % 60, 'Detik',
+                            isMobile: isMobile),
                       ],
                     ),
                     const SizedBox(height: 30),
@@ -598,7 +670,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 30),
                     _buildGradientText(
                       'Akad Nikah',
-                      fontSize: MediaQuery.of(context).size.width * 0.08,
+                      fontSize: isMobile
+                          ? MediaQuery.of(context).size.width * 0.08
+                          : 30,
                     ),
                     const SizedBox(height: 20),
                     _buildScheduleItem(
@@ -608,7 +682,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 30),
                     _buildGradientText(
                       'Resepsi',
-                      fontSize: MediaQuery.of(context).size.width * 0.08,
+                      fontSize: isMobile
+                          ? MediaQuery.of(context).size.width * 0.08
+                          : 30,
                     ),
                     const SizedBox(height: 20),
                     _buildScheduleItem(
@@ -661,7 +737,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   children: [
                     _buildGradientText(
                       'Our Gallery',
-                      fontSize: MediaQuery.of(context).size.width * 0.08,
+                      fontSize: isMobile
+                          ? MediaQuery.of(context).size.width * 0.08
+                          : 30,
                     ),
                     const SizedBox(height: 30),
                     Row(
@@ -670,17 +748,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         _buildImageCarousel(
                           context,
                           ['assets/a.jpeg', 'assets/g.jpeg', 'assets/e.jpeg'],
-                          0.38,
+                          isMobile ? 0.47 : 0.14,
                           0.5,
                           const Duration(seconds: 2),
                           Axis.horizontal,
                         ),
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildImageCarousel(
                               context,
-                              ['assets/b.jpeg', 'assets/berdua.jpeg', 'assets/c.jpeg'],
-                              0.48,
+                              [
+                                'assets/b.jpeg',
+                                'assets/berdua.jpeg',
+                                'assets/c.jpeg'
+                              ],
+                              isMobile ? 0.38 : 0.14,
                               0.24,
                               const Duration(seconds: 3),
                               Axis.vertical,
@@ -688,8 +771,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             const SizedBox(height: 12),
                             _buildImageCarousel(
                               context,
-                              ['assets/berdua.jpeg', 'assets/b.jpeg', 'assets/g.jpeg'],
-                              0.48,
+                              [
+                                'assets/berdua.jpeg',
+                                'assets/b.jpeg',
+                                'assets/g.jpeg'
+                              ],
+                              isMobile ? 0.38 : 0.14,
                               0.24,
                               const Duration(seconds: 4),
                               Axis.horizontal,
@@ -698,7 +785,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: isMobile ? 20 : 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -706,8 +793,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           children: [
                             _buildImageCarousel(
                               context,
-                              ['assets/a.jpeg', 'assets/berdua.jpeg', 'assets/c.jpeg'],
-                              0.48,
+                              [
+                                'assets/a.jpeg',
+                                'assets/berdua.jpeg',
+                                'assets/c.jpeg'
+                              ],
+                              isMobile ? 0.38 : 0.14,
                               0.24,
                               const Duration(seconds: 2),
                               Axis.horizontal,
@@ -715,8 +806,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             const SizedBox(height: 12),
                             _buildImageCarousel(
                               context,
-                              ['assets/d.jpeg', 'assets/b.jpeg', 'assets/g.jpeg'],
-                              0.48,
+                              [
+                                'assets/d.jpeg',
+                                'assets/b.jpeg',
+                                'assets/g.jpeg'
+                              ],
+                              isMobile ? 0.38 : 0.14,
                               0.24,
                               const Duration(seconds: 3),
                               Axis.vertical,
@@ -726,14 +821,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         _buildImageCarousel(
                           context,
                           ['assets/a.jpeg', 'assets/e.jpeg', 'assets/c.jpeg'],
-                          0.38,
+                          isMobile ? 0.47 : 0.14,
                           0.5,
                           const Duration(seconds: 4),
                           Axis.horizontal,
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: isMobile ? 20 : 10),
                     _buildImageCarousel(
                       context,
                       ['assets/a.jpeg', 'assets/b.jpeg', 'assets/c.jpeg'],
@@ -755,7 +850,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   children: [
                     _buildGradientText(
                       'Kado Pernikahan',
-                      fontSize: MediaQuery.of(context).size.width * 0.08,
+                      fontSize: isMobile
+                          ? MediaQuery.of(context).size.width * 0.08
+                          : 30,
                     ),
                     const SizedBox(height: 15),
                     _buildTextMerriweather(
@@ -778,7 +875,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   children: [
                     _buildGradientText(
                       'Ucapan dan Doa',
-                      fontSize: MediaQuery.of(context).size.width * 0.08,
+                      fontSize: isMobile
+                          ? MediaQuery.of(context).size.width * 0.08
+                          : 30,
                     ),
                     const SizedBox(height: 20),
                     _buildTextMerriweather(
@@ -817,7 +916,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 20),
                     const Divider(height: 1),
                     //
-                    _buildUcapanList(),
+                    _buildUcapanList(isMobile: isMobile),
                     const Divider(height: 1),
                     const SizedBox(height: 20),
                     _buildTextMerriweather(
@@ -828,7 +927,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 20),
                     _buildGradientText(
                       'Akhdan & Fitri',
-                      fontSize: MediaQuery.of(context).size.width * 0.08,
+                      fontSize: isMobile
+                          ? MediaQuery.of(context).size.width * 0.08
+                          : 30,
                     ),
                   ],
                 ),
@@ -844,20 +945,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ],
           ),
         ),
-        Positioned(
-          bottom: 20,
-          right: 20,
-          child: FloatingActionButton(
-            onPressed: isPlaying ? _stopMusic : _playMusic,
-            mini: true,
-            child: Icon(isPlaying ? Icons.volume_off : Icons.volume_up_sharp),
-          ),
-        ),
+        isMobile ? _buildMusic() : Container(),
       ],
     );
   }
 
-  Widget _buildUcapanList() {
+  Widget _buildMusic() {
+    return Positioned(
+      bottom: 20,
+      right: 20,
+      child: FloatingActionButton(
+        onPressed: isPlaying ? _stopMusic : _playMusic,
+        mini: true,
+        child: Icon(isPlaying ? Icons.volume_off : Icons.volume_up_sharp),
+      ),
+    );
+  }
+
+  Widget _buildUcapanList({required bool isMobile}) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('ucapan_kehadiran')
@@ -880,14 +985,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             shrinkWrap: false,
             physics: const ClampingScrollPhysics(),
             itemCount: docs.length,
-            itemBuilder: (context, index) => _buildUcapanItem(docs[index]),
+            itemBuilder: (context, index) => _buildUcapanItem(
+              docs[index],
+              isMobile: isMobile,
+            ),
           ),
         );
       },
     );
   }
 
-  Widget _buildUcapanItem(QueryDocumentSnapshot doc) {
+  Widget _buildUcapanItem(QueryDocumentSnapshot doc, {required bool isMobile}) {
     var data = doc.data() as Map<String, dynamic>;
     String date = data['timestamp'] != null
         ? DateFormat('dd MMM yyyy || HH:mm').format(
@@ -906,7 +1014,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         children: [
           _buildAvatar(data['nama'] ?? ''),
           const SizedBox(width: 15),
-          _buildUcapanDetails(data, date),
+          _buildUcapanDetails(
+            data,
+            date,
+            isMobile: isMobile,
+          ),
         ],
       ),
     );
@@ -925,9 +1037,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildUcapanDetails(Map<String, dynamic> data, String date) {
+  Widget _buildUcapanDetails(Map<String, dynamic> data, String date,
+      {required bool isMobile}) {
     return Container(
-      width: MediaQuery.sizeOf(context).width - 105,
+      width: isMobile
+          ? MediaQuery.sizeOf(context).width - 105
+          : MediaQuery.sizeOf(context).width - 1105,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -981,7 +1096,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10), color: Colors.white),
       child: DropdownButton(
-        value: dropdownValue.isEmpty ? null : dropdownValue,
+        // value: dropdownValue.isEmpty ? null : dropdownValue,
+        value: dropdownValue,
         icon: const Icon(Icons.keyboard_arrow_down_sharp),
         hint:
             _buildTextMerriweather("Konfirmasi kehadiran", color: Colors.grey),
@@ -990,8 +1106,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         underline: Container(),
         onChanged: (String? value) => setState(() => dropdownValue = value!),
         items: list
-            .map((value) => DropdownMenuItem(
-                value: value, child: _buildTextMerriweather(value)))
+            .map(
+              (value) => DropdownMenuItem(
+                value: value,
+                child: _buildTextMerriweather(value),
+              ),
+            )
             .toList(),
       ),
     );
@@ -1190,8 +1310,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildImageCarousel(BuildContext context, List<String> imagePaths,
-      double widthFactor, double heightFactor, Duration autoPlayInterval, Axis scrollDirection) {
+  Widget _buildImageCarousel(
+      BuildContext context,
+      List<String> imagePaths,
+      double widthFactor,
+      double heightFactor,
+      Duration autoPlayInterval,
+      Axis scrollDirection) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
@@ -1400,30 +1525,38 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildTimeBox(int value, String label) {
+  Widget _buildTimeBox(int value, String label, {required bool isMobile}) {
+    // double boxSize = isMobile ? 85 : 90;
+    // double fontSizeValue = isMobile ? 24 : 24;
+    // double fontSizeLabel = isMobile ? 15 : 14;
+    double padding = isMobile ? 10 : 16;
+    // double imageScale = isMobile ? 4.5 : 4;
+
     double screenWidth = MediaQuery.of(context).size.width;
-    double boxSize = screenWidth * 0.2;
-    double fontSizeValue = screenWidth * 0.06;
-    double fontSizeLabel = screenWidth * 0.04;
-    double imageScale = screenWidth / 400;
+    double boxSize = isMobile ? screenWidth * 0.2 : 90;
+    double fontSizeValue = isMobile ? screenWidth * 0.06 : 24;
+    double fontSizeLabel = isMobile ? screenWidth * 0.04 : 14;
+    double imageScale = isMobile ? screenWidth / 400 : 4;
+
     return Stack(
       children: [
         Container(
           width: boxSize,
           height: boxSize,
           margin: const EdgeInsets.symmetric(horizontal: 5),
-          padding: EdgeInsets.all(screenWidth * 0.025),
+          padding: EdgeInsets.all(padding),
           decoration: BoxDecoration(
-              color: 'BD7D1C'.toColor(),
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: const [
-                BoxShadow(
-                  blurRadius: 2,
-                  spreadRadius: 1,
-                  color: Colors.grey,
-                  offset: Offset(0.0, 0.0),
-                ),
-              ]),
+            color: 'BD7D1C'.toColor(),
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: const [
+              BoxShadow(
+                blurRadius: 2,
+                spreadRadius: 1,
+                color: Colors.grey,
+                offset: Offset(0.0, 0.0),
+              ),
+            ],
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -1445,7 +1578,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           top: 0,
           child: Image.asset(
             'assets/Vector.png',
-            scale: 4,
+            scale: imageScale,
             color: 'EBB23E'.toColor().withOpacity(0.2),
           ),
         ),
@@ -1454,7 +1587,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           bottom: 0,
           child: Image.asset(
             'assets/Vector-2.png',
-            scale: 4,
+            scale: imageScale,
             color: 'EBB23E'.toColor().withOpacity(0.2),
           ),
         ),
