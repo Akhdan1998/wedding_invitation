@@ -1526,17 +1526,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildTimeBox(int value, String label, {required bool isMobile}) {
-    // double boxSize = isMobile ? 85 : 90;
-    // double fontSizeValue = isMobile ? 24 : 24;
-    // double fontSizeLabel = isMobile ? 15 : 14;
+    double boxSize = isMobile ? 85 : 90;
+    double fontSizeValue = isMobile ? 24 : 24;
+    double fontSizeLabel = isMobile ? 15 : 14;
     double padding = isMobile ? 10 : 16;
-    // double imageScale = isMobile ? 4.5 : 4;
-
-    double screenWidth = MediaQuery.of(context).size.width;
-    double boxSize = isMobile ? screenWidth * 0.2 : 90;
-    double fontSizeValue = isMobile ? screenWidth * 0.06 : 24;
-    double fontSizeLabel = isMobile ? screenWidth * 0.04 : 14;
-    double imageScale = isMobile ? screenWidth / 400 : 4;
+    double imageScale = isMobile ? 4.5 : 4;
 
     return Stack(
       children: [
