@@ -16,6 +16,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:supercharged/supercharged.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'firebase_options.dart';
@@ -140,6 +142,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   static final eventDate = DateTime(2025, 11, 8, 9, 0);
   final String accountNumberA = '0710314349';
   final String accountNumberF = '5910115342';
+  final String accountNumberFB = '003621889298';
   final String phoneNumber = '081290763984';
   final String phoneNumberWA = "6281290763984";
   final String message =
@@ -191,7 +194,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final Uri googleCalendarUrl = Uri.parse(
         "https://www.google.com/calendar/render?action=TEMPLATE"
         "&text=${Uri.encodeComponent("Akhdan & Fitri Wedding")}"
-        "&details=${Uri.encodeComponent("Jangan lupa hadir di acara pernikahan kami!")}"
+        "&details=${Uri.encodeComponent("It won’t be the same tanpa kamu, so please make sure you come to our wedding!")}"
         "&location=${Uri.encodeComponent("Jakarta, Indonesia")}"
         "&dates=${_formatDateTime(eventDate)}/${_formatDateTime(
       eventDate.add(
@@ -295,7 +298,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         animationDuration: const Duration(seconds: 3),
         builder: (context) => ToastCard(
             title:
-                _buildTextMerriweather("Harap isi semua kolom!", fontSize: 14)),
+                _buildTextMerriweather("Let’s complete all the fields dulu, baru kita jalanin.", fontSize: 14)),
       ).show(context);
       return;
     }
@@ -384,38 +387,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _audioPlayer.dispose();
     super.dispose();
   }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   if (screenWidth == 0.0 || screenHeight == 0.0) {
-  //     return const Scaffold(
-  //       backgroundColor: Colors.black,
-  //       body: Center(
-  //         child: CircularProgressIndicator(
-  //           color: Colors.white,
-  //         ),
-  //       ),
-  //     );
-  //   }
-  //   return Scaffold(
-  //     backgroundColor: Colors.black,
-  //     body: Stack(
-  //       children: [
-  //         _buildBackground(
-  //           PageView(
-  //             scrollDirection: Axis.vertical,
-  //             controller: _pageController,
-  //             physics: const NeverScrollableScrollPhysics(),
-  //             children: [
-  //               _buildHomePage(),
-  //               _buildUIPage(),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -553,13 +524,30 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: isMobile ? 200 : 150,
-                      height: isMobile ? 300 : 250,
+                      padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        image: const DecorationImage(
-                          image: AssetImage('assets/wkwkwk.jpeg'),
-                          fit: BoxFit.cover,
+                        border: Border.all(width: 2, color: const Color(0xFFEBB23E)),
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(100),
+                          topLeft: Radius.circular(100),
+                          bottomRight: Radius.circular(10),
+                          bottomLeft: Radius.circular(10),
+                        ),
+                      ),
+                      child: Container(
+                        width: isMobile ? 200 : 150,
+                        height: isMobile ? 300 : 250,
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(100),
+                            topLeft: Radius.circular(100),
+                            bottomRight: Radius.circular(10),
+                            bottomLeft: Radius.circular(10),
+                          ),
+                          image: DecorationImage(
+                            image: AssetImage('assets/10.jpeg'),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
@@ -689,7 +677,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 20),
                     _buildScheduleItem(
                       date: schedule,
-                      time: 'Pukul : 11:00 WIB - Selesai',
+                      time: 'Pukul : 11:00 WIB - 17:00 WIB',
                     ),
                     const SizedBox(height: 30),
                     Column(
@@ -742,12 +730,29 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           : 30,
                     ),
                     const SizedBox(height: 30),
+                    _buildImageCarousel(
+                      context,
+                      [
+                        'assets/1.JPEG',
+                        'assets/2.JPEG',
+                        'assets/11.JPEG',
+                      ],
+                      0.9,
+                      0.3,
+                      const Duration(seconds: 2),
+                      Axis.vertical,
+                    ),
+                    SizedBox(height: isMobile ? 20 : 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _buildImageCarousel(
                           context,
-                          ['assets/a.jpeg', 'assets/g.jpeg', 'assets/e.jpeg'],
+                          [
+                            'assets/3.JPEG',
+                            'assets/20.JPG',
+                            'assets/33.JPEG',
+                          ],
                           isMobile ? 0.47 : 0.14,
                           0.5,
                           const Duration(seconds: 2),
@@ -759,9 +764,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             _buildImageCarousel(
                               context,
                               [
-                                'assets/b.jpeg',
-                                'assets/berdua.jpeg',
-                                'assets/c.jpeg'
+                                'assets/5.JPEG',
+                                'assets/7.JPEG',
+                                'assets/27.JPG',
                               ],
                               isMobile ? 0.38 : 0.14,
                               0.24,
@@ -772,9 +777,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             _buildImageCarousel(
                               context,
                               [
-                                'assets/berdua.jpeg',
-                                'assets/b.jpeg',
-                                'assets/g.jpeg'
+                                'assets/8.JPEG',
+                                'assets/9.JPEG',
+                                'assets/28.JPG',
                               ],
                               isMobile ? 0.38 : 0.14,
                               0.24,
@@ -794,9 +799,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             _buildImageCarousel(
                               context,
                               [
-                                'assets/a.jpeg',
-                                'assets/berdua.jpeg',
-                                'assets/c.jpeg'
+                                'assets/19.JPG',
+                                'assets/21.JPG',
+                                'assets/30.JPG',
                               ],
                               isMobile ? 0.38 : 0.14,
                               0.24,
@@ -807,9 +812,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             _buildImageCarousel(
                               context,
                               [
-                                'assets/d.jpeg',
-                                'assets/b.jpeg',
-                                'assets/g.jpeg'
+                                'assets/17.JPG',
+                                'assets/25.JPG',
+                                'assets/26.JPG',
                               ],
                               isMobile ? 0.38 : 0.14,
                               0.24,
@@ -820,7 +825,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ),
                         _buildImageCarousel(
                           context,
-                          ['assets/a.jpeg', 'assets/e.jpeg', 'assets/c.jpeg'],
+                          [
+                            'assets/12.JPEG',
+                            'assets/13.JPEG',
+                            'assets/6.JPEG',
+                          ],
                           isMobile ? 0.47 : 0.14,
                           0.5,
                           const Duration(seconds: 4),
@@ -831,7 +840,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     SizedBox(height: isMobile ? 20 : 10),
                     _buildImageCarousel(
                       context,
-                      ['assets/a.jpeg', 'assets/b.jpeg', 'assets/c.jpeg'],
+                      [
+                        'assets/23.JPG',
+                        'assets/24.JPG',
+                        'assets/31.JPG',
+                      ],
                       0.9,
                       0.3,
                       const Duration(seconds: 2),
@@ -920,7 +933,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const Divider(height: 1),
                     const SizedBox(height: 20),
                     _buildTextMerriweather(
-                      'Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i/teman-teman, berkenan hadir dan memberikan do’a restu kepada Kami.\n\nKami yang berhagia',
+                      'Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i/teman-teman, berkenan hadir dan memberikan do’a restu kepada Kami.\n\nKami yang berbahagia',
                       color: Colors.white,
                       fontSize: 13,
                     ),
@@ -998,7 +1011,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget _buildUcapanItem(QueryDocumentSnapshot doc, {required bool isMobile}) {
     var data = doc.data() as Map<String, dynamic>;
     String date = data['timestamp'] != null
-        ? DateFormat('dd MMM yyyy || HH:mm').format(
+        ? DateFormat('dd MMM yyyy • HH:mm').format(
             DateTime.fromMillisecondsSinceEpoch(
                     data['timestamp'].seconds * 1000)
                 .toLocal())
@@ -1132,6 +1145,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               40, context, 'Salin No. Telepon'),
           _buildAccountInfo("Fitri Yulianingsih", accountNumberF,
               'assets/bca.png', 6, context, 'Salin No. Rekening'),
+          _buildAccountInfo("Fitri Yulianingsih", accountNumberFB,
+              'assets/blu_logo.png', 10, context, 'Salin No. Rekening'),
           const SizedBox(height: 20),
           _buildGiftAddressSection(context),
         ],
@@ -1316,33 +1331,59 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       double widthFactor,
       double heightFactor,
       Duration autoPlayInterval,
-      Axis scrollDirection) {
+      Axis scrollDirection,
+      ) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
     return SizedBox(
       width: screenWidth * widthFactor,
       height: screenHeight * heightFactor,
-      child: CarouselSlider(
+      child: CarouselSlider.builder(
+        itemCount: imagePaths.length,
         options: CarouselOptions(
           height: screenHeight * heightFactor,
           autoPlay: true,
           autoPlayInterval: autoPlayInterval,
           viewportFraction: 1.0,
           scrollDirection: scrollDirection,
-          // scrollPhysics: NeverScrollableScrollPhysics(),
         ),
-        items: imagePaths.map((imagePath) {
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              imagePath,
-              width: screenWidth * widthFactor,
-              height: screenHeight * heightFactor,
-              fit: BoxFit.cover,
+        itemBuilder: (context, index, realIndex) {
+          final imagePath = imagePaths[index];
+          return Bounce(
+            duration: Duration(milliseconds: 100),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => FullScreenGallery(
+                    imagePaths: imagePaths,
+                    initialIndex: index,
+                  ),
+                ),
+              );
+            },
+            child: Hero(
+              tag: imagePath,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  imagePath,
+                  width: screenWidth * widthFactor,
+                  height: screenHeight * heightFactor,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.grey[400],
+                      alignment: Alignment.center,
+                      child: Icon(Icons.broken_image, size: 40, color: Colors.grey[700]),
+                    );
+                  },
+                ),
+              ),
             ),
           );
-        }).toList(),
+        },
       ),
     );
   }
@@ -1679,6 +1720,105 @@ class _TextFieldCustomState extends State<TextFieldCustom> {
                 )
               : null,
         ),
+      ),
+    );
+  }
+}
+
+class FullScreenGallery extends StatefulWidget {
+  final List<String> imagePaths;
+  final int initialIndex;
+
+  const FullScreenGallery({
+    super.key,
+    required this.imagePaths,
+    this.initialIndex = 0,
+  });
+
+  @override
+  State<FullScreenGallery> createState() => _FullScreenGalleryState();
+}
+
+class _FullScreenGalleryState extends State<FullScreenGallery> {
+  late PageController _pageController;
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+    _pageController = PageController(initialPage: widget.initialIndex);
+  }
+
+  void _goToPrevious() {
+    if (_currentIndex > 0) {
+      _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+    }
+  }
+
+  void _goToNext() {
+    if (_currentIndex < widget.imagePaths.length - 1) {
+      _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          PhotoViewGallery.builder(
+            itemCount: widget.imagePaths.length,
+            pageController: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            builder: (context, index) {
+              return PhotoViewGalleryPageOptions(
+                imageProvider: AssetImage(widget.imagePaths[index]),
+                minScale: PhotoViewComputedScale.contained,
+                maxScale: PhotoViewComputedScale.covered * 2,
+                heroAttributes: PhotoViewHeroAttributes(tag: widget.imagePaths[index]),
+              );
+            },
+            loadingBuilder: (context, _) => const Center(child: CircularProgressIndicator(color: Colors.white,),),
+          ),
+
+          // Tombol Close
+          Positioned(
+            top: 40,
+            left: 20,
+            child: IconButton(
+              icon: const Icon(Icons.close, color: Colors.white, size: 30),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+
+          // Tombol Prev
+          if (_currentIndex > 0)
+            Positioned(
+              left: 20,
+              top: MediaQuery.of(context).size.height / 2 - 30,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 30),
+                onPressed: _goToPrevious,
+              ),
+            ),
+
+          // Tombol Next
+          if (_currentIndex < widget.imagePaths.length - 1)
+            Positioned(
+              right: 20,
+              top: MediaQuery.of(context).size.height / 2 - 30,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 30),
+                onPressed: _goToNext,
+              ),
+            ),
+        ],
       ),
     );
   }
