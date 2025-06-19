@@ -733,9 +733,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     _buildImageCarousel(
                       context,
                       [
-                        'assets/1.JPEG',
-                        'assets/2.JPEG',
-                        'assets/11.JPEG',
+                        'assets/1.jpeg',
+                        'assets/2.jpeg',
+                        'assets/11.jpeg',
                       ],
                       0.9,
                       0.3,
@@ -749,9 +749,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         _buildImageCarousel(
                           context,
                           [
-                            'assets/3.JPEG',
-                            'assets/20.JPG',
-                            'assets/33.JPEG',
+                            'assets/3.jpeg',
+                            'assets/20.jpg',
+                            'assets/33.jpeg',
                           ],
                           isMobile ? 0.47 : 0.14,
                           0.5,
@@ -764,9 +764,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             _buildImageCarousel(
                               context,
                               [
-                                'assets/5.JPEG',
-                                'assets/7.JPEG',
-                                'assets/27.JPG',
+                                'assets/5.jpeg',
+                                'assets/7.jpeg',
+                                'assets/27.jpg',
                               ],
                               isMobile ? 0.38 : 0.14,
                               0.24,
@@ -777,9 +777,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             _buildImageCarousel(
                               context,
                               [
-                                'assets/8.JPEG',
-                                'assets/9.JPEG',
-                                'assets/28.JPG',
+                                'assets/8.jpeg',
+                                'assets/9.jpeg',
+                                'assets/28.jpg',
                               ],
                               isMobile ? 0.38 : 0.14,
                               0.24,
@@ -799,9 +799,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             _buildImageCarousel(
                               context,
                               [
-                                'assets/19.JPG',
-                                'assets/21.JPG',
-                                'assets/30.JPG',
+                                'assets/19.jpg',
+                                'assets/21.jpg',
+                                'assets/30.jpg',
                               ],
                               isMobile ? 0.38 : 0.14,
                               0.24,
@@ -812,9 +812,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             _buildImageCarousel(
                               context,
                               [
-                                'assets/17.JPG',
-                                'assets/25.JPG',
-                                'assets/26.JPG',
+                                'assets/17.jpg',
+                                'assets/25.jpg',
+                                'assets/26.jpg',
                               ],
                               isMobile ? 0.38 : 0.14,
                               0.24,
@@ -826,9 +826,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         _buildImageCarousel(
                           context,
                           [
-                            'assets/12.JPEG',
-                            'assets/13.JPEG',
-                            'assets/6.JPEG',
+                            'assets/12.jpeg',
+                            'assets/13.jpeg',
+                            'assets/6.jpeg',
                           ],
                           isMobile ? 0.47 : 0.14,
                           0.5,
@@ -841,9 +841,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     _buildImageCarousel(
                       context,
                       [
-                        'assets/23.JPG',
-                        'assets/24.JPG',
-                        'assets/31.JPG',
+                        'assets/23.jpg',
+                        'assets/24.jpg',
+                        'assets/31.jpg',
                       ],
                       0.9,
                       0.3,
