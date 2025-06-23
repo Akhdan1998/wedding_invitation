@@ -545,7 +545,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             bottomLeft: Radius.circular(10),
                           ),
                           image: DecorationImage(
-                            image: AssetImage('assets/10.jpeg'),
+                            image: AssetImage('assets/26.jpg'),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -613,7 +613,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 30),
                     _buildIdentityItem(
                       name: 'Akhdan Habibie, S.Kom',
-                      imagePath: 'assets/man.png',
+                      imagePath: 'assets/34.jpeg',
                       instagramUsername: 'akhddan',
                       parents:
                           'Anak kedua dari\nBapak Drs. Muhammad Syakur & Ibu Dra. Hasanah',
@@ -624,7 +624,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 30),
                     _buildIdentityItem(
                       name: 'Fitri Yulianingsih, S.Ak',
-                      imagePath: 'assets/girl.jpg',
+                      imagePath: 'assets/12.jpeg',
                       instagramUsername: 'yliafithri',
                       parents:
                           'Anak kedua dari\nBapak Sudiarjo & Ibu Nuraeni S',
@@ -730,61 +730,45 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           : 30,
                     ),
                     const SizedBox(height: 30),
-                    _buildImageCarousel(
-                      context,
-                      [
-                        'assets/1.jpeg',
-                        'assets/2.jpeg',
-                        'assets/11.jpeg',
-                      ],
-                      0.9,
-                      0.3,
-                      const Duration(seconds: 2),
-                      Axis.vertical,
-                    ),
-                    SizedBox(height: isMobile ? 20 : 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildImageCarousel(
-                          context,
-                          [
+                        ImageCarousel(
+                          imagePaths: const [
                             'assets/3.jpeg',
                             'assets/20.jpg',
                             'assets/33.jpeg',
                           ],
-                          isMobile ? 0.47 : 0.14,
-                          0.5,
-                          const Duration(seconds: 2),
-                          Axis.horizontal,
+                          widthFactor: isMobile ? 0.47 : 0.14,
+                          heightFactor: 0.5,
+                          autoPlayInterval: const Duration(seconds: 2),
+                          scrollDirection: Axis.horizontal,
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildImageCarousel(
-                              context,
-                              [
+                            ImageCarousel(
+                              imagePaths: const [
                                 'assets/5.jpeg',
-                                'assets/7.jpeg',
-                                'assets/27.jpg',
+                                    'assets/7.jpeg',
+                                    'assets/27.jpg',
                               ],
-                              isMobile ? 0.38 : 0.14,
-                              0.24,
-                              const Duration(seconds: 3),
-                              Axis.vertical,
+                              widthFactor: isMobile ? 0.38 : 0.14,
+                              heightFactor: 0.24,
+                              autoPlayInterval: const Duration(seconds: 3),
+                              scrollDirection: Axis.vertical,
                             ),
                             const SizedBox(height: 12),
-                            _buildImageCarousel(
-                              context,
-                              [
-                                'assets/8.jpeg',
+                            ImageCarousel(
+                              imagePaths: const [
+                                'assets/31.jpg',
                                 'assets/9.jpeg',
                                 'assets/28.jpg',
                               ],
-                              isMobile ? 0.38 : 0.14,
-                              0.24,
-                              const Duration(seconds: 4),
-                              Axis.horizontal,
+                              widthFactor: isMobile ? 0.38 : 0.14,
+                              heightFactor: 0.24,
+                              autoPlayInterval: const Duration(seconds: 4),
+                              scrollDirection: Axis.horizontal,
                             ),
                           ],
                         ),
@@ -796,59 +780,43 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       children: [
                         Column(
                           children: [
-                            _buildImageCarousel(
-                              context,
-                              [
+                            ImageCarousel(
+                              imagePaths: const [
                                 'assets/19.jpg',
                                 'assets/21.jpg',
                                 'assets/30.jpg',
                               ],
-                              isMobile ? 0.38 : 0.14,
-                              0.24,
-                              const Duration(seconds: 2),
-                              Axis.horizontal,
+                              widthFactor: isMobile ? 0.38 : 0.14,
+                              heightFactor: 0.24,
+                              autoPlayInterval: const Duration(seconds: 2),
+                              scrollDirection: Axis.horizontal,
                             ),
                             const SizedBox(height: 12),
-                            _buildImageCarousel(
-                              context,
-                              [
+                            ImageCarousel(
+                              imagePaths: const [
                                 'assets/17.jpg',
                                 'assets/25.jpg',
-                                'assets/26.jpg',
+                                'assets/1.jpeg',
                               ],
-                              isMobile ? 0.38 : 0.14,
-                              0.24,
-                              const Duration(seconds: 3),
-                              Axis.vertical,
+                              widthFactor: isMobile ? 0.38 : 0.14,
+                              heightFactor: 0.24,
+                              autoPlayInterval: const Duration(seconds: 3),
+                              scrollDirection: Axis.vertical,
                             ),
                           ],
                         ),
-                        _buildImageCarousel(
-                          context,
-                          [
-                            'assets/12.jpeg',
+                        ImageCarousel(
+                          imagePaths: const [
+                            'assets/11.jpeg',
                             'assets/13.jpeg',
                             'assets/6.jpeg',
                           ],
-                          isMobile ? 0.47 : 0.14,
-                          0.5,
-                          const Duration(seconds: 4),
-                          Axis.horizontal,
+                          widthFactor: isMobile ? 0.47 : 0.14,
+                          heightFactor: 0.5,
+                          autoPlayInterval: const Duration(seconds: 4),
+                          scrollDirection: Axis.horizontal,
                         ),
                       ],
-                    ),
-                    SizedBox(height: isMobile ? 20 : 10),
-                    _buildImageCarousel(
-                      context,
-                      [
-                        'assets/23.jpg',
-                        'assets/24.jpg',
-                        'assets/31.jpg',
-                      ],
-                      0.9,
-                      0.3,
-                      const Duration(seconds: 2),
-                      Axis.vertical,
                     ),
                   ],
                 ),
@@ -1325,69 +1293,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildImageCarousel(
-      BuildContext context,
-      List<String> imagePaths,
-      double widthFactor,
-      double heightFactor,
-      Duration autoPlayInterval,
-      Axis scrollDirection,
-      ) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-
-    return SizedBox(
-      width: screenWidth * widthFactor,
-      height: screenHeight * heightFactor,
-      child: CarouselSlider.builder(
-        itemCount: imagePaths.length,
-        options: CarouselOptions(
-          height: screenHeight * heightFactor,
-          autoPlay: true,
-          autoPlayInterval: autoPlayInterval,
-          viewportFraction: 1.0,
-          scrollDirection: scrollDirection,
-        ),
-        itemBuilder: (context, index, realIndex) {
-          final imagePath = imagePaths[index];
-          return Bounce(
-            duration: Duration(milliseconds: 100),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => FullScreenGallery(
-                    imagePaths: imagePaths,
-                    initialIndex: index,
-                  ),
-                ),
-              );
-            },
-            child: Hero(
-              tag: imagePath,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  imagePath,
-                  width: screenWidth * widthFactor,
-                  height: screenHeight * heightFactor,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[400],
-                      alignment: Alignment.center,
-                      child: Icon(Icons.broken_image, size: 40, color: Colors.grey[700]),
-                    );
-                  },
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   Widget _buildIdentityItem({
     required String name,
     required String imagePath,
@@ -1820,6 +1725,138 @@ class _FullScreenGalleryState extends State<FullScreenGallery> {
             ),
         ],
       ),
+    );
+  }
+}
+
+class ImageCarousel extends StatefulWidget {
+  final List<String> imagePaths;
+  final double widthFactor;
+  final double heightFactor;
+  final Duration autoPlayInterval;
+  final Axis scrollDirection;
+
+  const ImageCarousel({
+    super.key,
+    required this.imagePaths,
+    required this.widthFactor,
+    required this.heightFactor,
+    required this.autoPlayInterval,
+    required this.scrollDirection,
+  });
+
+  @override
+  State<ImageCarousel> createState() => _ImageCarouselState();
+}
+
+class _ImageCarouselState extends State<ImageCarousel> {
+  int currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    return Stack(
+      children: [
+        SizedBox(
+          width: screenWidth * widget.widthFactor,
+          height: screenHeight * widget.heightFactor,
+          child: CarouselSlider.builder(
+            itemCount: widget.imagePaths.length,
+            itemBuilder: (context, index, realIndex) {
+              final imagePath = widget.imagePaths[index];
+              return Bounce(
+                duration: const Duration(milliseconds: 100),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => FullScreenGallery(
+                        imagePaths: widget.imagePaths,
+                        initialIndex: index,
+                      ),
+                    ),
+                  );
+                },
+                child: Hero(
+                  tag: imagePath,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(
+                      imagePath,
+                      width: screenWidth * widget.widthFactor,
+                      height: screenHeight * widget.heightFactor,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey[400],
+                          alignment: Alignment.center,
+                          child: Icon(Icons.broken_image,
+                              size: 40, color: Colors.grey[700]),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              );
+            },
+            options: CarouselOptions(
+              height: screenHeight * widget.heightFactor,
+              autoPlay: false,
+              autoPlayInterval: widget.autoPlayInterval,
+              viewportFraction: 1.0,
+              scrollDirection: widget.scrollDirection,
+              onPageChanged: (index, reason) {
+                setState(() => currentIndex = index);
+              },
+            ),
+          ),
+        ),
+        Positioned(
+          left: widget.scrollDirection == Axis.vertical ? 8 : null,
+          right: widget.scrollDirection == Axis.horizontal ? 8 : null,
+          bottom: widget.scrollDirection == Axis.horizontal ? 8 : null,
+          top: widget.scrollDirection == Axis.vertical ? 8 : null,
+          child: widget.scrollDirection == Axis.horizontal
+              ? Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(widget.imagePaths.length, (index) {
+              bool isActive = index == currentIndex;
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                width: isActive ? 9 : 6,
+                height: isActive ? 9 : 6,
+                decoration: BoxDecoration(
+                  color: isActive
+                      ? Colors.white
+                      : Colors.grey.shade400,
+                  shape: BoxShape.circle,
+                ),
+              );
+            }),
+          )
+              : Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: List.generate(widget.imagePaths.length, (index) {
+              bool isActive = index == currentIndex;
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                margin: const EdgeInsets.symmetric(vertical: 3),
+                width: isActive ? 9 : 6,
+                height: isActive ? 9 : 6,
+                decoration: BoxDecoration(
+                  color: isActive
+                      ? Colors.white
+                      : Colors.grey.shade400,
+                  shape: BoxShape.circle,
+                ),
+              );
+            }),
+          ),
+        ),
+      ],
     );
   }
 }
