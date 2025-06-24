@@ -147,7 +147,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final String phoneNumberWA = "6281290763984";
   final String message =
       "Cuy, ada something on the way ke rumah lo. Kalau udah landed, hit me up ya!\n-[nama]";
-  final String schedule = "Sabtu, 8 November 2025";
+  final String schedule = "Saturday, November 8, 2025";
   final String alamat =
       'Jalan Curug Agung, Gang Mushola, Rt.02/10, Tanah Baru, Beji, Depok, Jawa Barat\n(Gerbang Warna Biru)';
   final AudioPlayer _audioPlayer = AudioPlayer();
@@ -297,8 +297,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         position: DelightSnackbarPosition.top,
         animationDuration: const Duration(seconds: 3),
         builder: (context) => ToastCard(
-            title:
-                _buildTextMerriweather("Let’s complete all the fields dulu, baru kita jalanin.", fontSize: 14)),
+            leading: const Icon(
+              Icons.warning,
+              size: 28,
+            ),
+            title: _buildTextNoto(
+              "Let’s complete all the fields dulu, baru kita jalanin.",
+              fontSize: 14,
+              textAlign: TextAlign.start,
+            ),
+        ),
       ).show(context);
       return;
     }
@@ -340,7 +348,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             size: 28,
           ),
           title: _buildTextNoto(
-            "Disalin ke clipboard!",
+            "Copied to clipboard!",
             fontSize: 14,
             textAlign: TextAlign.start,
           ),
@@ -465,7 +473,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildTextNoto(
-                  "Undangan Pernikahan Kami",
+                  "Our wedding invitation",
                   color: Colors.white,
                 ),
                 const SizedBox(height: 30),
@@ -475,7 +483,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
                 const SizedBox(height: 30),
                 _buildTextBonaNova(
-                  'Kepada Bpk/Ibu/Saudara/i',
+                  'To Mr./Mrs./Dear Family and Friends,',
                   fontSize: 12,
                 ),
                 const SizedBox(height: 30),
@@ -489,12 +497,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 Container(
                   padding: EdgeInsets.only(left: 35, right: 35),
                   child: _buildTextBonaNova(
-                    'Tanpa Mengurangi Rasa Hormat, Kami Mengundang Anda Untuk Berhadir Di Acara Pernikahan Kami.',
+                    'With all due respect, we would like to invite you to celebrate our wedding day.',
                     fontSize: 13,
                   ),
                 ),
                 SizedBox(height: isMobile ? 30 : 0),
-                isMobile ? _buildButton('Buka Undangan', Icons.drafts, () {
+                isMobile ? _buildButton('Open the invitation', Icons.drafts, () {
                   _playMusic();
                   _pageController.animateToPage(1,
                       duration: const Duration(milliseconds: 500),
@@ -572,13 +580,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildTimeBox(_remainingTime.inDays, 'Hari',
+                        _buildTimeBox(_remainingTime.inDays, 'Day',
                             isMobile: isMobile),
-                        _buildTimeBox(_remainingTime.inHours % 24, 'Jam',
+                        _buildTimeBox(_remainingTime.inHours % 24, 'Hour',
                             isMobile: isMobile),
-                        _buildTimeBox(_remainingTime.inMinutes % 60, 'Menit',
+                        _buildTimeBox(_remainingTime.inMinutes % 60, 'Minute',
                             isMobile: isMobile),
-                        _buildTimeBox(_remainingTime.inSeconds % 60, 'Detik',
+                        _buildTimeBox(_remainingTime.inSeconds % 60, 'Second',
                             isMobile: isMobile),
                       ],
                     ),
@@ -589,7 +597,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     Container(
                       padding: const EdgeInsets.only(left: 20, right: 20),
                       child: _buildTextMerriweather(
-                        '"Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung merasa tenteram kepadanya. Dan Dia menjadikan di antaramu rasa kasih dan sayang."\n{Q.S : Ar-Rum (30) : 21}',
+                        '"And among His signs is that He created for you pasangan from your own kind, so you may find peace in them – and He placed between you love and mercy."\n{Q.S : Ar-Rum (30) : 21}',
                         fontSize: 12,
                         color: Colors.white,
                       ),
@@ -606,7 +614,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildTextMerriweather(
-                      'Dengan memohon rahmat dan ridho Allah Subhanahu Wa Ta’ala, dengan penuh syukur kami bermaksud menyelenggarakan pernikahan kami',
+                      'With gratitude and by seeking rahmat and ridho from Allah Subhanahu Wa Ta’ala, we humbly plan to hold our wedding ceremony.',
                       fontSize: 13,
                       color: Colors.white,
                     ),
@@ -615,8 +623,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       name: 'Akhdan Habibie, S.Kom',
                       imagePath: 'assets/34.jpeg',
                       instagramUsername: 'akhddan',
-                      parents:
-                          'Anak kedua dari\nBapak Drs. Muhammad Syakur & Ibu Dra. Hasanah',
+                      parents: 'The second child of\nMr. Drs. Muhammad Syakur & Mrs. Dra. Hasanah.',
                     ),
                     const SizedBox(height: 30),
                     _buildTextGreatVibes('&',
@@ -626,8 +633,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       name: 'Fitri Yulianingsih, S.Ak',
                       imagePath: 'assets/12.jpeg',
                       instagramUsername: 'yliafithri',
-                      parents:
-                          'Anak kedua dari\nBapak Sudiarjo & Ibu Nuraeni S',
+                      parents: 'The second child of\nMr. Sudiarjo & Mrs. Nuraeni S',
                     ),
                   ],
                 ),
@@ -644,7 +650,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildTextMerriweather(
-                      'Dengan segala kerendahan hati kami berharap kehadiran Bapak/Ibu/Saudara/i dalam acara pernikahan kami yang akan diselenggarakan pada :',
+                      'It is with humble hearts that we invite you, Bapak/Ibu/Saudara/i, to be part of our wedding day – happening on :',
                       fontSize: 13,
                       color: Colors.white,
                     ),
@@ -657,7 +663,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                     const SizedBox(height: 30),
                     _buildGradientText(
-                      'Akad Nikah',
+                      'The Solemnization of Marriage',
                       fontSize: isMobile
                           ? MediaQuery.of(context).size.width * 0.08
                           : 30,
@@ -665,11 +671,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 20),
                     _buildScheduleItem(
                       date: schedule,
-                      time: 'Pukul : 09:00 WIB - 10:00 WIB',
+                      time: 'At 09.00 – 10.00 WIB ',
                     ),
                     const SizedBox(height: 30),
                     _buildGradientText(
-                      'Resepsi',
+                      'Reception',
                       fontSize: isMobile
                           ? MediaQuery.of(context).size.width * 0.08
                           : 30,
@@ -677,14 +683,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 20),
                     _buildScheduleItem(
                       date: schedule,
-                      time: 'Pukul : 11:00 WIB - 17:00 WIB',
+                      time: 'At 11:00 - 17:00 WIB',
                     ),
                     const SizedBox(height: 30),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         _buildTextMerriweather(
-                          'Bertempat di,',
+                          'Venue,',
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
@@ -698,7 +704,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ],
                     ),
                     const SizedBox(height: 30),
-                    _buildButton('Lihat Lokasi', Icons.location_pin, () async {
+                    _buildButton('Open Maps', Icons.location_pin, () async {
                       final Uri googleMapsAppUrl =
                           Uri.parse("geo:0,0?q=ermaVWha4hcJXcpY7");
                       final Uri googleMapsWebUrl = Uri.parse(
@@ -750,8 +756,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             ImageCarousel(
                               imagePaths: const [
                                 'assets/5.jpeg',
-                                    'assets/7.jpeg',
-                                    'assets/27.jpg',
+                                'assets/7.jpeg',
+                                'assets/27.jpg',
                               ],
                               widthFactor: isMobile ? 0.38 : 0.14,
                               heightFactor: 0.24,
@@ -830,14 +836,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _buildGradientText(
-                      'Kado Pernikahan',
+                      'Wedding Gift',
                       fontSize: isMobile
                           ? MediaQuery.of(context).size.width * 0.08
                           : 30,
                     ),
                     const SizedBox(height: 15),
                     _buildTextMerriweather(
-                      "Doa Restu Anda merupakan karunia yang sangat berarti bagi kami.\nDan jika memberi adalah ungkapan tanda kasih Anda, Anda dapat memberi kado secara cashless.",
+                      "Your presence and prayers are truly a blessing for us. But if giving is your love language, we also provide a cashless gift option.",
                       fontSize: 13,
                       color: Colors.white,
                     ),
@@ -855,14 +861,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     _buildGradientText(
-                      'Ucapan dan Doa',
+                      'Words & Prayers',
                       fontSize: isMobile
                           ? MediaQuery.of(context).size.width * 0.08
                           : 30,
                     ),
                     const SizedBox(height: 20),
                     _buildTextMerriweather(
-                      "Kirimkan ucapan dan doa untuk kedua mempelai",
+                      "Drop your wishes and prayers for the happy couple",
                       color: Colors.white,
                       fontSize: 13,
                     ),
@@ -873,7 +879,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       height: MediaQuery.of(context).size.height * 0.1,
                       borderSide:
                           const BorderSide(color: Colors.black, width: 2.0),
-                      hintText: 'Nama',
+                      hintText: 'Name',
                       textCapitalization: TextCapitalization.words,
                     ),
                     const SizedBox(height: 20),
@@ -883,7 +889,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       height: MediaQuery.of(context).size.height * 0.1,
                       borderSide:
                           const BorderSide(color: Colors.black, width: 2.0),
-                      hintText: 'Ucapan',
+                      hintText: 'Wishes & prayers ',
                       textCapitalization: TextCapitalization.sentences,
                     ),
                     const SizedBox(height: 20),
@@ -901,7 +907,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const Divider(height: 1),
                     const SizedBox(height: 20),
                     _buildTextMerriweather(
-                      'Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i/teman-teman, berkenan hadir dan memberikan do’a restu kepada Kami.\n\nKami yang berbahagia',
+                      'It would truly be an honor and joy for us to have Bapak/Ibu/Saudara/i/friends present on our special day to give your blessings.Warmly,\nKami yang berbahagia.',
                       color: Colors.white,
                       fontSize: 13,
                     ),
@@ -918,7 +924,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               const SizedBox(height: 50),
               //_build
               _buildTextMerriweather(
-                'Dibuat Oleh Pendekar Gendut',
+                'Crafted by Pendekar Gendut',
                 fontSize: 8,
                 color: Colors.white,
               ),
@@ -1065,7 +1071,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             borderRadius: BorderRadius.circular(10),
             color: Colors.transparent,
             border: Border.all(width: 1, color: Colors.white)),
-        child: _buildTextMerriweather('Kirim', color: Colors.white),
+        child: _buildTextMerriweather('Send', color: Colors.white),
       ),
     );
   }
@@ -1081,7 +1087,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         value: dropdownValue,
         icon: const Icon(Icons.keyboard_arrow_down_sharp),
         hint:
-            _buildTextMerriweather("Konfirmasi kehadiran", color: Colors.grey),
+            _buildTextMerriweather("Confirmation of attendance", color: Colors.grey),
         isExpanded: true,
         elevation: 0,
         underline: Container(),
@@ -1108,13 +1114,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       child: Column(
         children: [
           _buildAccountInfo("Akhdan Habibie", accountNumberA, 'assets/bca.png',
-              6, context, 'Salin No. Rekening'),
+              6, context, 'Copy Account Number'),
           _buildAccountInfo("Akhdan Habibie", phoneNumber, 'assets/dana.png',
-              40, context, 'Salin No. Telepon'),
+              40, context, 'Copy Phone Number'),
           _buildAccountInfo("Fitri Yulianingsih", accountNumberF,
-              'assets/bca.png', 6, context, 'Salin No. Rekening'),
+              'assets/bca.png', 6, context, 'Copy Account Number'),
           _buildAccountInfo("Fitri Yulianingsih", accountNumberFB,
-              'assets/blu_logo.png', 10, context, 'Salin No. Rekening'),
+              'assets/blu_logo.png', 10, context, 'Copy Account Number'),
           const SizedBox(height: 20),
           _buildGiftAddressSection(context),
         ],
@@ -1153,12 +1159,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       children: [
         const Icon(Icons.card_giftcard, color: Colors.black, size: 40),
         const SizedBox(height: 20),
-        _buildTextNoto("Anda Juga Bisa Mengirim Kado Fisik Ke Alamat Berikut :",
+        _buildTextNoto("If you'd like to send a physical gift, feel free to drop it at the address below :",
             fontSize: 13),
         const SizedBox(height: 10),
         _buildTextNoto(alamat, fontSize: 13),
         const SizedBox(height: 20),
-        _buildCopy('Salin Alamat', () => _copyToClipboard(context, alamat)),
+        _buildCopy('Copy Address', () => _copyToClipboard(context, alamat)),
         const SizedBox(height: 10),
         _buildWhatsAppButton(context),
       ],
@@ -1183,7 +1189,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           children: [
             Image.asset('assets/wa.png', scale: 85, color: Colors.black),
             const SizedBox(width: 10),
-            _buildTextMerriweather("Konfirmasi via WhatsApp", fontSize: 10),
+            _buildTextMerriweather("Confirm via WhatsApp", fontSize: 10),
           ],
         ),
       ),
