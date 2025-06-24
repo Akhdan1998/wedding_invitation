@@ -73,7 +73,38 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/
+    - assets/a.jpeg
+    - assets/b.jpeg
+    - assets/c.jpeg
+    - assets/d.jpeg
+    - assets/e.jpeg
+    - assets/f.jpeg
+    - assets/g.jpeg
+    - assets/h.jpeg
+    - assets/i.jpeg
+    - assets/j.jpg
+    - assets/k.jpg
+    - assets/l.jpg
+    - assets/m.jpg
+    - assets/n.jpg
+    - assets/o.jpg
+    - assets/p.jpg
+    - assets/q.jpg
+    - assets/r.jpg
+    - assets/s.jpg
+    - assets/t.jpeg
+    - assets/u.jpeg
+    - assets/bca.png
+    - assets/blu_logo.png
+    - assets/bot.png
+    - assets/dana.png
+    - assets/datetime.png
+    - assets/instagram.jpg
+    - assets/paper.png
+    - assets/tot.png
+    - assets/Vector.png
+    - assets/Vector-2.png
+    - assets/wa.png
     - assets/audio/music.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see

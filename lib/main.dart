@@ -553,7 +553,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             bottomLeft: Radius.circular(10),
                           ),
                           image: DecorationImage(
-                            image: AssetImage('assets/26.jpg'),
+                            image: AssetImage('assets/o.jpg'),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -621,7 +621,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 30),
                     _buildIdentityItem(
                       name: 'Akhdan Habibie, S.Kom',
-                      imagePath: 'assets/34.jpeg',
+                      imagePath: 'assets/u.jpeg',
                       instagramUsername: 'akhddan',
                       parents: 'The second child of\nMr. Drs. Muhammad Syakur & Mrs. Dra. Hasanah.',
                     ),
@@ -631,7 +631,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 30),
                     _buildIdentityItem(
                       name: 'Fitri Yulianingsih, S.Ak',
-                      imagePath: 'assets/12.jpeg',
+                      imagePath: 'assets/h.jpeg',
                       instagramUsername: 'yliafithri',
                       parents: 'The second child of\nMr. Sudiarjo & Mrs. Nuraeni S',
                     ),
@@ -741,9 +741,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       children: [
                         ImageCarousel(
                           imagePaths: const [
-                            'assets/3.jpeg',
-                            'assets/20.jpg',
-                            'assets/33.jpeg',
+                            'assets/b.jpeg',
+                            'assets/l.jpg',
+                            'assets/t.jpeg',
                           ],
                           widthFactor: isMobile ? 0.47 : 0.14,
                           heightFactor: 0.5,
@@ -755,9 +755,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           children: [
                             ImageCarousel(
                               imagePaths: const [
-                                'assets/5.jpeg',
-                                'assets/7.jpeg',
-                                'assets/27.jpg',
+                                'assets/c.jpeg',
+                                'assets/e.jpeg',
+                                'assets/p.jpg',
                               ],
                               widthFactor: isMobile ? 0.38 : 0.14,
                               heightFactor: 0.24,
@@ -767,9 +767,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             const SizedBox(height: 12),
                             ImageCarousel(
                               imagePaths: const [
-                                'assets/31.jpg',
-                                'assets/9.jpeg',
-                                'assets/28.jpg',
+                                'assets/s.jpg',
+                                'assets/f.jpeg',
+                                'assets/q.jpg',
                               ],
                               widthFactor: isMobile ? 0.38 : 0.14,
                               heightFactor: 0.24,
@@ -788,9 +788,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           children: [
                             ImageCarousel(
                               imagePaths: const [
-                                'assets/19.jpg',
-                                'assets/21.jpg',
-                                'assets/30.jpg',
+                                'assets/k.jpg',
+                                'assets/m.jpg',
+                                'assets/r.jpg',
                               ],
                               widthFactor: isMobile ? 0.38 : 0.14,
                               heightFactor: 0.24,
@@ -800,9 +800,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             const SizedBox(height: 12),
                             ImageCarousel(
                               imagePaths: const [
-                                'assets/17.jpg',
-                                'assets/25.jpg',
-                                'assets/1.jpeg',
+                                'assets/j.jpg',
+                                'assets/n.jpg',
+                                'assets/a.jpeg',
                               ],
                               widthFactor: isMobile ? 0.38 : 0.14,
                               heightFactor: 0.24,
@@ -813,9 +813,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ),
                         ImageCarousel(
                           imagePaths: const [
-                            'assets/11.jpeg',
-                            'assets/13.jpeg',
-                            'assets/6.jpeg',
+                            'assets/g.jpeg',
+                            'assets/i.jpeg',
+                            'assets/d.jpeg',
                           ],
                           widthFactor: isMobile ? 0.47 : 0.14,
                           heightFactor: 0.5,
@@ -1418,7 +1418,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 100),
       onPressed: onTap,
       child: Container(
-        width: 150,
+        width: 174,
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -1796,7 +1796,7 @@ class _ImageCarouselState extends State<ImageCarousel> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          color: Colors.grey[400],
+                          color: Colors.grey[500],
                           alignment: Alignment.center,
                           child: Icon(Icons.broken_image,
                               size: 40, color: Colors.grey[700]),
