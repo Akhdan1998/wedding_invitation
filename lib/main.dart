@@ -553,7 +553,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             bottomLeft: Radius.circular(10),
                           ),
                           image: DecorationImage(
-                            image: AssetImage('assets/o.jpg'),
+                            image: AssetImage('assets/IMG_3379.jpg'),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -621,7 +621,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 30),
                     _buildIdentityItem(
                       name: 'Akhdan Habibie, S.Kom',
-                      imagePath: 'assets/u.jpeg',
+                      imagePath: 'assets/FGM_7172.jpg',
                       instagramUsername: 'akhddan',
                       parents: 'The second child of\nMr. Drs. Muhammad Syakur & Mrs. Dra. Hasanah.',
                     ),
@@ -631,7 +631,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     const SizedBox(height: 30),
                     _buildIdentityItem(
                       name: 'Fitri Yulianingsih, S.Ak',
-                      imagePath: 'assets/h.jpeg',
+                      // imagePath: 'assets/FGM_7354.jpg',
+                      imagePath: 'assets/FGM_7143.jpg',
                       instagramUsername: 'yliafithri',
                       parents: 'The second child of\nMr. Sudiarjo & Mrs. Nuraeni S',
                     ),
@@ -741,13 +742,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       children: [
                         ImageCarousel(
                           imagePaths: const [
-                            'assets/b.jpeg',
-                            'assets/l.jpg',
-                            'assets/t.jpeg',
+                            'assets/FGM_7354.jpg',
+                            'assets/IMG_3381.jpg',
+                            'assets/FGM_7247.jpg',
                           ],
                           widthFactor: isMobile ? 0.47 : 0.14,
                           heightFactor: 0.5,
-                          autoPlayInterval: const Duration(seconds: 2),
                           scrollDirection: Axis.horizontal,
                         ),
                         Column(
@@ -755,25 +755,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           children: [
                             ImageCarousel(
                               imagePaths: const [
-                                'assets/c.jpeg',
-                                'assets/e.jpeg',
-                                'assets/p.jpg',
+                                'assets/FGM_7383.jpg',
+                                'assets/FGM_7211.jpg',
+                                'assets/IMG_3352.jpg',
                               ],
                               widthFactor: isMobile ? 0.38 : 0.14,
                               heightFactor: 0.24,
-                              autoPlayInterval: const Duration(seconds: 3),
                               scrollDirection: Axis.vertical,
                             ),
                             const SizedBox(height: 12),
                             ImageCarousel(
                               imagePaths: const [
-                                'assets/s.jpg',
-                                'assets/f.jpeg',
-                                'assets/q.jpg',
+                                'assets/IMG_3378.jpg',
+                                'assets/FGM_7271.jpg',
+                                'assets/IMG_3353.jpg',
                               ],
                               widthFactor: isMobile ? 0.38 : 0.14,
                               heightFactor: 0.24,
-                              autoPlayInterval: const Duration(seconds: 4),
                               scrollDirection: Axis.horizontal,
                             ),
                           ],
@@ -788,38 +786,35 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           children: [
                             ImageCarousel(
                               imagePaths: const [
-                                'assets/k.jpg',
-                                'assets/m.jpg',
-                                'assets/r.jpg',
+                                'assets/IMG_3345.jpg',
+                                'assets/IMG_3347.jpg',
+                                'assets/IMG_3355.jpg',
                               ],
                               widthFactor: isMobile ? 0.38 : 0.14,
                               heightFactor: 0.24,
-                              autoPlayInterval: const Duration(seconds: 2),
                               scrollDirection: Axis.horizontal,
                             ),
                             const SizedBox(height: 12),
                             ImageCarousel(
                               imagePaths: const [
-                                'assets/j.jpg',
-                                'assets/n.jpg',
-                                'assets/a.jpeg',
+                                'assets/IMG_3348.jpg',
+                                'assets/IMG_3350.jpg',
+                                'assets/FGM_7108.jpg',
                               ],
                               widthFactor: isMobile ? 0.38 : 0.14,
                               heightFactor: 0.24,
-                              autoPlayInterval: const Duration(seconds: 3),
                               scrollDirection: Axis.vertical,
                             ),
                           ],
                         ),
                         ImageCarousel(
                           imagePaths: const [
-                            'assets/g.jpeg',
-                            'assets/i.jpeg',
-                            'assets/d.jpeg',
+                            'assets/FGM_7352.jpg',
+                            'assets/FGM_7379.jpg',
+                            'assets/FGM_7178.jpg',
                           ],
                           widthFactor: isMobile ? 0.47 : 0.14,
                           heightFactor: 0.5,
-                          autoPlayInterval: const Duration(seconds: 4),
                           scrollDirection: Axis.horizontal,
                         ),
                       ],
@@ -1739,7 +1734,6 @@ class ImageCarousel extends StatefulWidget {
   final List<String> imagePaths;
   final double widthFactor;
   final double heightFactor;
-  final Duration autoPlayInterval;
   final Axis scrollDirection;
 
   const ImageCarousel({
@@ -1747,7 +1741,6 @@ class ImageCarousel extends StatefulWidget {
     required this.imagePaths,
     required this.widthFactor,
     required this.heightFactor,
-    required this.autoPlayInterval,
     required this.scrollDirection,
   });
 
@@ -1795,12 +1788,20 @@ class _ImageCarouselState extends State<ImageCarousel> {
                       height: screenHeight * widget.heightFactor,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
+                        debugPrint('Gagal load gambar: $imagePath');
+                        debugPrint('Error load gambar: $error');
                         return Container(
-                          color: Colors.grey[500],
+                          color: Colors.grey[300],
                           alignment: Alignment.center,
                           child: Icon(Icons.broken_image,
-                              size: 40, color: Colors.grey[700]),
+                              size: 40, color: Colors.grey[500]),
                         );
+                      },
+                      frameBuilder: (BuildContext context, Widget child, int? frame, bool wasSynchronouslyLoaded) {
+                        if (frame != null || wasSynchronouslyLoaded) {
+                          debugPrint('✅ Berhasil load gambar: $imagePath');
+                        }
+                        return child;
                       },
                     ),
                   ),
@@ -1810,7 +1811,6 @@ class _ImageCarouselState extends State<ImageCarousel> {
             options: CarouselOptions(
               height: screenHeight * widget.heightFactor,
               autoPlay: false,
-              autoPlayInterval: widget.autoPlayInterval,
               viewportFraction: 1.0,
               scrollDirection: widget.scrollDirection,
               onPageChanged: (index, reason) {
