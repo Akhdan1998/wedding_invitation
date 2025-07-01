@@ -1569,6 +1569,9 @@ class TextFieldCustom extends StatefulWidget {
   final bool filled;
   final TextCapitalization textCapitalization;
   final bool readOnly;
+  final BorderSide? focusedBorderSide;
+  final BorderSide? enabledBorderSide;
+  final BorderSide? errorBorderSide;
 
   const TextFieldCustom({
     super.key,
@@ -1584,6 +1587,9 @@ class TextFieldCustom extends StatefulWidget {
     this.filled = true,
     this.textCapitalization = TextCapitalization.none,
     this.readOnly = false,
+    this.focusedBorderSide,
+    this.enabledBorderSide,
+    this.errorBorderSide,
   });
 
   @override
@@ -1614,6 +1620,20 @@ class _TextFieldCustomState extends State<TextFieldCustom> {
         decoration: InputDecoration(
           filled: widget.filled,
           fillColor: widget.fillColor,
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide:
+            widget.focusedBorderSide ?? const BorderSide(color: Colors.transparent),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide:
+            widget.enabledBorderSide ?? const BorderSide(color: Colors.transparent),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: widget.errorBorderSide ?? const BorderSide(color: Colors.red),
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(widget.borderRadius),
             borderSide: widget.borderSide,
