@@ -384,6 +384,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
 
     _startCountdown();
+
+    final guestName = Uri.base.queryParameters["name"] ?? "";
+    if (guestName.isNotEmpty) {
+      nama.text = guestName;
+    }
   }
 
   @override
@@ -869,6 +874,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                     const SizedBox(height: 20),
                     TextFieldCustom(
+                      readOnly: true,
                       controller: nama,
                       obscureText: false,
                       height: MediaQuery.of(context).size.height * 0.1,
@@ -1562,6 +1568,7 @@ class TextFieldCustom extends StatefulWidget {
   final BorderSide borderSide;
   final bool filled;
   final TextCapitalization textCapitalization;
+  final bool readOnly;
 
   const TextFieldCustom({
     super.key,
@@ -1576,6 +1583,7 @@ class TextFieldCustom extends StatefulWidget {
     this.borderSide = BorderSide.none,
     this.filled = true,
     this.textCapitalization = TextCapitalization.none,
+    this.readOnly = false,
   });
 
   @override
@@ -1596,6 +1604,7 @@ class _TextFieldCustomState extends State<TextFieldCustom> {
     return Container(
       color: Colors.transparent,
       child: TextFormField(
+        readOnly: widget.readOnly,
         style: Desk(),
         textCapitalization: widget.textCapitalization,
         focusNode: widget.focusNode,
