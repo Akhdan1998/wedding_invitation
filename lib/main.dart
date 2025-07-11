@@ -1309,8 +1309,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Column(
       children: [
         Container(
-          height: 100,
-          width: 70,
+          height: 150,
+          width: 105,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(50),
             color: Colors.white,
