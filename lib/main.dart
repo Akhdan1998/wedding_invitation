@@ -297,15 +297,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         position: DelightSnackbarPosition.top,
         animationDuration: const Duration(seconds: 3),
         builder: (context) => ToastCard(
-            leading: const Icon(
-              Icons.warning,
-              size: 28,
-            ),
-            title: _buildTextNoto(
-              "Let’s complete all the fields dulu, baru kita jalanin.",
-              fontSize: 14,
-              textAlign: TextAlign.start,
-            ),
+          leading: const Icon(
+            Icons.warning,
+            size: 28,
+          ),
+          title: _buildTextNoto(
+            "Let’s complete all the fields dulu, baru kita jalanin.",
+            fontSize: 14,
+            textAlign: TextAlign.start,
+          ),
         ),
       ).show(context);
       return;
@@ -507,12 +507,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                 ),
                 SizedBox(height: isMobile ? 30 : 0),
-                isMobile ? _buildButton('Open the invitation', Icons.drafts, () {
-                  _playMusic();
-                  _pageController.animateToPage(1,
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeInOut);
-                }) : Container(),
+                isMobile
+                    ? _buildButton('Open the invitation', Icons.drafts, () {
+                        _playMusic();
+                        _pageController.animateToPage(1,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.easeInOut);
+                      })
+                    : Container(),
               ],
             ),
           ),
@@ -539,7 +541,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     Container(
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        border: Border.all(width: 2, color: const Color(0xFFEBB23E)),
+                        border: Border.all(
+                            width: 2, color: const Color(0xFFEBB23E)),
                         borderRadius: const BorderRadius.only(
                           topRight: Radius.circular(100),
                           topLeft: Radius.circular(100),
@@ -628,7 +631,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       name: 'Akhdan Habibie, S.Kom',
                       imagePath: 'assets/FGM_7172.jpg',
                       instagramUsername: 'akhddan',
-                      parents: 'The second child of\nMr. Drs. Muhammad Syakur & Mrs. Dra. Hasanah.',
+                      parents:
+                          'The second child of\nMr. Drs. Muhammad Syakur & Mrs. Dra. Hasanah.',
                     ),
                     const SizedBox(height: 30),
                     _buildTextGreatVibes('&',
@@ -639,7 +643,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       // imagePath: 'assets/FGM_7354.jpg',
                       imagePath: 'assets/FGM_7143.jpg',
                       instagramUsername: 'yliafithri',
-                      parents: 'The second child of\nMr. Sudiarjo & Mrs. Nuraeni S',
+                      parents:
+                          'The second child of\nMr. Sudiarjo & Mrs. Nuraeni S',
                     ),
                   ],
                 ),
@@ -804,7 +809,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               imagePaths: const [
                                 'assets/IMG_3348.jpg',
                                 'assets/IMG_3350.jpg',
-                                'assets/FGM_7108.jpg',
+                                'assets/thumbnail.jpg',
                               ],
                               widthFactor: isMobile ? 0.38 : 0.14,
                               heightFactor: 0.24,
@@ -1087,8 +1092,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         // value: dropdownValue.isEmpty ? null : dropdownValue,
         value: dropdownValue,
         icon: const Icon(Icons.keyboard_arrow_down_sharp),
-        hint:
-            _buildTextMerriweather("Confirmation of attendance", color: Colors.grey),
+        hint: _buildTextMerriweather("Confirmation of attendance",
+            color: Colors.grey),
         isExpanded: true,
         elevation: 0,
         underline: Container(),
@@ -1160,7 +1165,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       children: [
         const Icon(Icons.card_giftcard, color: Colors.black, size: 40),
         const SizedBox(height: 20),
-        _buildTextNoto("If you'd like to send a physical gift, feel free to drop it at the address below :",
+        _buildTextNoto(
+            "If you'd like to send a physical gift, feel free to drop it at the address below :",
             fontSize: 13),
         const SizedBox(height: 10),
         _buildTextNoto(alamat, fontSize: 13),
@@ -1483,62 +1489,48 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     double fontSizeValue = isMobile ? 24 : 24;
     double fontSizeLabel = isMobile ? 15 : 14;
     double padding = isMobile ? 10 : 16;
-    double imageScale = isMobile ? 4.5 : 4;
 
-    return Stack(
-      children: [
-        Container(
-          width: boxSize,
-          height: boxSize,
-          margin: const EdgeInsets.symmetric(horizontal: 5),
-          padding: EdgeInsets.all(padding),
-          decoration: BoxDecoration(
-            color: 'BD7D1C'.toColor(),
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: const [
-              BoxShadow(
-                blurRadius: 2,
-                spreadRadius: 1,
-                color: Colors.grey,
-                offset: Offset(0.0, 0.0),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildTextMerriweather(
-                '$value',
-                fontSize: fontSizeValue,
-                fontWeight: FontWeight.bold,
-              ),
-              _buildTextMerriweather(
-                label,
-                fontSize: fontSizeLabel,
-                fontWeight: FontWeight.bold,
-              ),
-            ],
-          ),
+    return Container(
+      width: boxSize,
+      height: boxSize,
+      margin: const EdgeInsets.symmetric(horizontal: 5),
+      padding: EdgeInsets.all(padding),
+      decoration: BoxDecoration(
+        color: 'BD7D1C'.toColor(),
+        borderRadius: BorderRadius.circular(10),
+        gradient: LinearGradient(
+          colors: [
+            'BD7D1C'.toColor(),
+            'EBB23E'.toColor(),
+            'BD7D1C'.toColor(),
+          ],
+          begin: Alignment.topLeft,
+          end: const Alignment(0.8, 1),
         ),
-        Positioned(
-          right: 5,
-          top: 0,
-          child: Image.asset(
-            'assets/Vector.png',
-            scale: imageScale,
-            color: 'EBB23E'.toColor().withOpacity(0.2),
+        boxShadow: const [
+          BoxShadow(
+            blurRadius: 2,
+            spreadRadius: 1,
+            color: Colors.grey,
+            offset: Offset(0.0, 0.0),
           ),
-        ),
-        Positioned(
-          left: 5,
-          bottom: 0,
-          child: Image.asset(
-            'assets/Vector-2.png',
-            scale: imageScale,
-            color: 'EBB23E'.toColor().withOpacity(0.2),
+        ],
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildTextMerriweather(
+            '$value',
+            fontSize: fontSizeValue,
+            fontWeight: FontWeight.bold,
           ),
-        ),
-      ],
+          _buildTextMerriweather(
+            label,
+            fontSize: fontSizeLabel,
+            fontWeight: FontWeight.bold,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -1622,17 +1614,18 @@ class _TextFieldCustomState extends State<TextFieldCustom> {
           fillColor: widget.fillColor,
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide:
-            widget.focusedBorderSide ?? const BorderSide(color: Colors.transparent),
+            borderSide: widget.focusedBorderSide ??
+                const BorderSide(color: Colors.transparent),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide:
-            widget.enabledBorderSide ?? const BorderSide(color: Colors.transparent),
+            borderSide: widget.enabledBorderSide ??
+                const BorderSide(color: Colors.transparent),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: widget.errorBorderSide ?? const BorderSide(color: Colors.red),
+            borderSide:
+                widget.errorBorderSide ?? const BorderSide(color: Colors.red),
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(widget.borderRadius),
@@ -1687,13 +1680,15 @@ class _FullScreenGalleryState extends State<FullScreenGallery> {
 
   void _goToPrevious() {
     if (_currentIndex > 0) {
-      _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      _pageController.previousPage(
+          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     }
   }
 
   void _goToNext() {
     if (_currentIndex < widget.imagePaths.length - 1) {
-      _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+      _pageController.nextPage(
+          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     }
   }
 
@@ -1716,10 +1711,15 @@ class _FullScreenGalleryState extends State<FullScreenGallery> {
                 imageProvider: AssetImage(widget.imagePaths[index]),
                 minScale: PhotoViewComputedScale.contained,
                 maxScale: PhotoViewComputedScale.covered * 2,
-                heroAttributes: PhotoViewHeroAttributes(tag: widget.imagePaths[index]),
+                heroAttributes:
+                    PhotoViewHeroAttributes(tag: widget.imagePaths[index]),
               );
             },
-            loadingBuilder: (context, _) => const Center(child: CircularProgressIndicator(color: Colors.white,),),
+            loadingBuilder: (context, _) => const Center(
+              child: CircularProgressIndicator(
+                color: Colors.white,
+              ),
+            ),
           ),
 
           // Tombol Close
@@ -1738,7 +1738,8 @@ class _FullScreenGalleryState extends State<FullScreenGallery> {
               left: 20,
               top: MediaQuery.of(context).size.height / 2 - 30,
               child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 30),
+                icon: const Icon(Icons.arrow_back_ios,
+                    color: Colors.white, size: 30),
                 onPressed: _goToPrevious,
               ),
             ),
@@ -1749,7 +1750,8 @@ class _FullScreenGalleryState extends State<FullScreenGallery> {
               right: 20,
               top: MediaQuery.of(context).size.height / 2 - 30,
               child: IconButton(
-                icon: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 30),
+                icon: const Icon(Icons.arrow_forward_ios,
+                    color: Colors.white, size: 30),
                 onPressed: _goToNext,
               ),
             ),
@@ -1826,7 +1828,8 @@ class _ImageCarouselState extends State<ImageCarousel> {
                               size: 40, color: Colors.grey[500]),
                         );
                       },
-                      frameBuilder: (BuildContext context, Widget child, int? frame, bool wasSynchronouslyLoaded) {
+                      frameBuilder: (BuildContext context, Widget child,
+                          int? frame, bool wasSynchronouslyLoaded) {
                         if (frame != null || wasSynchronouslyLoaded) {
                           debugPrint('✅ Berhasil load gambar: $imagePath');
                         }
@@ -1855,41 +1858,37 @@ class _ImageCarouselState extends State<ImageCarousel> {
           top: widget.scrollDirection == Axis.vertical ? 8 : null,
           child: widget.scrollDirection == Axis.horizontal
               ? Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(widget.imagePaths.length, (index) {
-              bool isActive = index == currentIndex;
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                width: isActive ? 9 : 6,
-                height: isActive ? 9 : 6,
-                decoration: BoxDecoration(
-                  color: isActive
-                      ? Colors.white
-                      : Colors.grey.shade400,
-                  shape: BoxShape.circle,
-                ),
-              );
-            }),
-          )
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(widget.imagePaths.length, (index) {
+                    bool isActive = index == currentIndex;
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                      width: isActive ? 9 : 6,
+                      height: isActive ? 9 : 6,
+                      decoration: BoxDecoration(
+                        color: isActive ? Colors.white : Colors.grey.shade400,
+                        shape: BoxShape.circle,
+                      ),
+                    );
+                  }),
+                )
               : Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: List.generate(widget.imagePaths.length, (index) {
-              bool isActive = index == currentIndex;
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.symmetric(vertical: 3),
-                width: isActive ? 9 : 6,
-                height: isActive ? 9 : 6,
-                decoration: BoxDecoration(
-                  color: isActive
-                      ? Colors.white
-                      : Colors.grey.shade400,
-                  shape: BoxShape.circle,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: List.generate(widget.imagePaths.length, (index) {
+                    bool isActive = index == currentIndex;
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      margin: const EdgeInsets.symmetric(vertical: 3),
+                      width: isActive ? 9 : 6,
+                      height: isActive ? 9 : 6,
+                      decoration: BoxDecoration(
+                        color: isActive ? Colors.white : Colors.grey.shade400,
+                        shape: BoxShape.circle,
+                      ),
+                    );
+                  }),
                 ),
-              );
-            }),
-          ),
         ),
       ],
     );
